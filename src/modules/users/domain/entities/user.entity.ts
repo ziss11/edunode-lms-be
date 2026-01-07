@@ -35,6 +35,39 @@ export class UserEntity {
     return this.isActive;
   }
 
+  update(
+    email: Email,
+    firstName: string,
+    lastName: string,
+    role: UserRole,
+  ): UserEntity {
+    return new UserEntity(
+      this.id,
+      email,
+      this.password,
+      firstName,
+      lastName,
+      role,
+      this.isActive,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
+  updatePassword(password: Password): UserEntity {
+    return new UserEntity(
+      this.id,
+      this.email,
+      password,
+      this.firstName,
+      this.lastName,
+      this.role,
+      this.isActive,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
   activate(): UserEntity {
     return new UserEntity(
       this.id,

@@ -2,28 +2,22 @@ import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions';
 import { UserEntity } from '../../domain/entities/user.entity';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { Email } from '../../domain/value-objects/email.vo';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { Password } from '../../domain/value-objects/password.vo';
 
 @Injectable()
-export class UpdateUserUseCase {
+export class UpdatePasswordUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(id: string, dto: UpdateUserDto): Promise<UserEntity | null> {
+  async execute(id: string, password: string): Promise<UserEntity | null> {
     const exists = await this.userRepository.findById(id);
     if (!exists) {
       throw new NotFoundException('User not found');
     }
 
-    const emailExists = await this.userRepository.exists(dto.email);
-    if (emailExists) {
-      throw new NotFoundException('Email already used');
-    }
-
-    const email = new Email(dto.email);
-    const user = exists.update(email, dto.firstName, dto.lastName, dto.role);
+    const newPassword = await Password.create(password);
+    const user = exists.updatePassword(newPassword);
 
     return this.userRepository.update(id, user);
   }

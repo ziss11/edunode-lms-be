@@ -10,5 +10,6 @@ export interface IUserRepository {
   ): Promise<{ users: UserEntity[]; total: number }>;
   exists(email: string): Promise<boolean>;
   update(id: string, user: UserEntity): Promise<UserEntity | null>;
+  updatePassword(id: string, password: string): Promise<UserEntity | null>;
   delete(id: string): Promise<void>;
 }
