@@ -156,7 +156,6 @@ function addErrorResponseDecorators(
           errors: [
             {
               code: 'unauthorized',
-              field: 'authorization',
               message: 'Invalid or expired token',
             },
           ],
@@ -172,7 +171,6 @@ function addErrorResponseDecorators(
           errors: [
             {
               code: 'forbidden',
-              field: 'role',
               message: 'You do not have permission to access this resource',
             },
           ],
@@ -188,7 +186,6 @@ function addErrorResponseDecorators(
           errors: [
             {
               code: 'notFound',
-              field: 'id',
               message: 'User with the specified ID was not found',
             },
           ],
