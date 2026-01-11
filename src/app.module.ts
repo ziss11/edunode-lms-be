@@ -4,7 +4,6 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { CorrelationIdMiddleware } from './common/middlewares/correlation-id.middleware';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -56,6 +55,6 @@ import { MinioModule } from './shared/storage/minio/minio.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorrelationIdMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
