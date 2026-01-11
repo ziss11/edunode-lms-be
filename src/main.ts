@@ -2,16 +2,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
-import { createLogger } from 'winston';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { WinstonLogger } from './common/utils/winston.logger';
 import { swaggerConfig } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: createLogger(),
+    logger: new WinstonLogger(),
   });
 
   const configService = app.get(ConfigService);
@@ -50,10 +49,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // Global Interceptors
-  app.useGlobalInterceptors(
-    new LoggingInterceptor(),
-    new TransformInterceptor(),
-  );
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   // Swagger Documentation (only in development)
   if (nodeEnv === 'development') {
@@ -74,22 +70,18 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`
-╔════════════════════════════════════════════════════════════════════════════════════════════════╗
-║                                                                                       ║
-║   🚀 EduNode API Server                                                               ║
-║                                                                                       ║ 
-║   Environment:  ${nodeEnv.padEnd(45)}                                                 ║
-║   Server:       http://localhost:${port}/${apiPrefix}/${apiVersion}${' '.repeat(22)}  ║
-║   Swagger Docs: http://localhost:${port}/api/docs${' '.repeat(23)}                    ║
-║                                                                                       ║
-║   📊 Infrastructure Services:                                                         ║
-║   - PostgreSQL: localhost:5432                                                        ║
-║   - MongoDB:    localhost:27017                                                       ║
-║   - Redis:      localhost:6379                                                        ║
-║   - RabbitMQ:   localhost:5672 (Management: 15672)                                    ║
-║   - MinIO:      localhost:9000 (Console: 9001)                                        ║
-║                                                                                       ║
-╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+  🚀 EduNode API Server
+
+  Environment:  ${nodeEnv.padEnd(45)}
+  Server:       http://localhost:${port}/${apiPrefix}/${apiVersion}${' '.repeat(22)}
+  Swagger Docs: http://localhost:${port}/api/docs${' '.repeat(23)}                    
+
+  📊 Infrastructure Services:                                                         
+  - PostgreSQL: localhost:5432                                                        
+  - MongoDB:    localhost:27017                                                       
+  - Redis:      localhost:6379                                                        
+  - RabbitMQ:   localhost:5672 (Management: 15672)                                    
+  - MinIO:      localhost:9000 (Console: 9001)                                        
   `);
 }
 bootstrap().catch((err) => {

@@ -7,14 +7,14 @@ export class MetaResponse {
   @ApiProperty({ example: 10 })
   limit: number;
 
-  @ApiProperty({ example: 100 })
+  @ApiProperty({ example: 1 })
   totalData: number;
 
-  @ApiProperty({ example: 10 })
+  @ApiProperty({ example: 1 })
   totalPages: number;
 
   constructor(partial: Partial<MetaResponse>) {
     Object.assign(this, partial);
-    this.totalPages = Math.ceil(this.totalData / this.limit);
+    this.totalPages = Math.ceil(this.totalData / this.limit) || 0;
   }
 }

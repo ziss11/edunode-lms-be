@@ -2,7 +2,9 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as amqp from 'amqplib';
-import { RABBITMQ_CHANNEL } from './rabbitmq.module';
+
+export const RABBITMQ_CONNECTION = 'RABBITMQ_CONNECTION';
+export const RABBITMQ_CHANNEL = 'RABBITMQ_CHANNEL';
 
 export interface MessageOptions {
   persistent?: boolean;

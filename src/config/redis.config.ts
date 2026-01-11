@@ -1,24 +1,20 @@
 import { registerAs } from '@nestjs/config';
-import { z } from 'zod';
 
-const redisConfigSchema = z.object({
-  host: z.string().default('localhost'),
-  port: z.coerce.number().default(6379),
-  password: z.string().optional(),
-  db: z.coerce.number().default(0),
-  ttl: z.coerce.number().default(3600), // 1 hour
-});
-
-export type RedisConfig = z.infer<typeof redisConfigSchema>;
+export interface RedisConfig {
+  host: string;
+  port: number;
+  password: string;
+  db: number;
+  ttl: number;
+}
 
 export default registerAs('redis', (): RedisConfig => {
-  const config = redisConfigSchema.parse({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD,
-    db: process.env.REDIS_DB,
-    ttl: process.env.REDIS_TTL,
-  });
-
+  const config: RedisConfig = {
+    host: process.env.REDIS_HOST || '',
+    port: Number(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_PASSWORD || '',
+    db: Number(process.env.REDIS_DB) || 0,
+    ttl: Number(process.env.REDIS_TTL) || 3600,
+  };
   return config;
 });

@@ -4,7 +4,6 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { CommonModule } from './common/common.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { CorrelationIdMiddleware } from './common/middlewares/correlation-id.middleware';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import appConfig from './config/app.config';
@@ -14,7 +13,7 @@ import minioConfig from './config/minio.config';
 import rabbitmqConfig from './config/rabbitmq.config';
 import redisConfig from './config/redis.config';
 import { validateEnvironment } from './config/validation.schema';
-import { UsersModule } from './modules/users/users.module';
+import { UserModule } from './modules/user/user.module';
 import { MongodbModule } from './shared/database/mongodb/mongodb.module';
 import { DrizzleModule } from './shared/database/postgres/drizzle.module';
 import { RedisModule } from './shared/database/redis/redis.module';
@@ -44,7 +43,7 @@ import { MinioModule } from './shared/storage/minio/minio.module';
     RedisModule,
     RabbitMQModule.forRoot(),
     MinioModule,
-    UsersModule,
+    UserModule,
   ],
   controllers: [],
   providers: [
@@ -53,7 +52,6 @@ import { MinioModule } from './shared/storage/minio/minio.module';
       useClass: HttpExceptionFilter,
     },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
   ],
 })
 export class AppModule implements NestModule {

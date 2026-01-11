@@ -15,7 +15,7 @@ export const MINIO_CLIENT = 'MINIO_CLIENT';
         configService: ConfigService,
       ): Promise<Minio.Client> => {
         const config = configService.get('minio') as {
-          endPoint: string;
+          endpoint: string;
           port: number;
           useSSL: boolean;
           accessKey: string;
@@ -23,7 +23,7 @@ export const MINIO_CLIENT = 'MINIO_CLIENT';
           bucket: string;
         };
         const client = new Minio.Client({
-          endPoint: config.endPoint,
+          endPoint: config.endpoint,
           port: config.port,
           useSSL: config.useSSL,
           accessKey: config.accessKey,

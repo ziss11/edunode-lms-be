@@ -1,10 +1,11 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import amqp from 'amqplib';
-import { RabbitMQService } from './rabbitmq.service';
-
-export const RABBITMQ_CONNECTION = 'RABBITMQ_CONNECTION';
-export const RABBITMQ_CHANNEL = 'RABBITMQ_CHANNEL';
+import {
+  RABBITMQ_CHANNEL,
+  RABBITMQ_CONNECTION,
+  RabbitMQService,
+} from './rabbitmq.service';
 
 @Global()
 @Module({})
