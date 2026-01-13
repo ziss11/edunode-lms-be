@@ -10,7 +10,7 @@ import { Password } from '../../../user/domain/value-objects/password.vo';
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { AuthResponseDto } from '../dto/auth.response.dto';
+import { TokenResponseDto } from '../dto/auth.response.dto';
 import { RegisterDto } from '../dto/register.dto';
 
 export class RegisterUseCase {
@@ -21,7 +21,7 @@ export class RegisterUseCase {
     private readonly tokenService: TokenService,
   ) {}
 
-  async execute(dto: RegisterDto): Promise<AuthResponseDto> {
+  async execute(dto: RegisterDto): Promise<TokenResponseDto> {
     const exists = await this.userRepository.findByEmail(dto.email);
     if (exists) {
       throw new UnauthorizedException('Email is already in use');
@@ -66,13 +66,6 @@ export class RegisterUseCase {
     return {
       accessToken,
       refreshToken,
-      expiresIn: this.tokenService.getAccessTokenExpiresIn(),
-      user: {
-        id: createdUser.id,
-        email: createdUser.email.getValue(),
-        fullName: createdUser.fullName,
-        role: createdUser.role,
-      },
     };
   }
 }

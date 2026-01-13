@@ -9,7 +9,7 @@ import type { IUserRepository } from '../../../user/domain/repositories/user.rep
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { AuthResponseDto } from '../dto/auth.response.dto';
+import { TokenResponseDto } from '../dto/auth.response.dto';
 
 export class RefreshTokenUseCase {
   constructor(
@@ -20,7 +20,7 @@ export class RefreshTokenUseCase {
     private readonly tokenService: TokenService,
   ) {}
 
-  async execute(userId: string): Promise<AuthResponseDto> {
+  async execute(userId: string): Promise<TokenResponseDto> {
     const auth = await this.authenticationRepository.findByUserId(userId);
     if (!auth) {
       throw new UnauthorizedException('Invalid refresh token');
@@ -76,13 +76,6 @@ export class RefreshTokenUseCase {
     return {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
-      expiresIn: this.tokenService.getAccessTokenExpiresIn(),
-      user: {
-        id: user.id,
-        email: user.email.getValue(),
-        fullName: user.fullName,
-        role: user.role,
-      },
     };
   }
 }

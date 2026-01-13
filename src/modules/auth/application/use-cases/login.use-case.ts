@@ -6,7 +6,7 @@ import type { IUserRepository } from '../../../user/domain/repositories/user.rep
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { AuthResponseDto } from '../dto/auth.response.dto';
+import { TokenResponseDto } from '../dto/auth.response.dto';
 import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class LoginUseCase {
     private readonly tokenService: TokenService,
   ) {}
 
-  async execute(dto: LoginDto): Promise<AuthResponseDto> {
+  async execute(dto: LoginDto): Promise<TokenResponseDto> {
     const user = await this.userRepository.findByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Email is invalid');
@@ -56,13 +56,6 @@ export class LoginUseCase {
     return {
       accessToken,
       refreshToken,
-      expiresIn: this.tokenService.getAccessTokenExpiresIn(),
-      user: {
-        id: user.id,
-        email: user.email.getValue(),
-        fullName: user.fullName,
-        role: user.role,
-      },
     };
   }
 }

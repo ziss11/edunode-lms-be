@@ -20,7 +20,7 @@ import { JwtRefreshGuard } from '../../../common/guards/jwt-refresh.guard';
 import { ResponseUtils } from '../../../common/utils/response.util';
 import { UserResponseDto } from '../../user/application/dto/user.response.dto';
 import { GetUserUseCase } from '../../user/application/use-cases/get-user.use-case';
-import { AuthResponseDto } from '../application/dto/auth.response.dto';
+import { TokenResponseDto } from '../application/dto/auth.response.dto';
 import { LoginDto } from '../application/dto/login.dto';
 import { RegisterDto } from '../application/dto/register.dto';
 import { UpdatePasswordDto } from '../application/dto/update-password.dto';
@@ -48,7 +48,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Validate(LoginDto)
   @ApiOperation({ summary: 'Login user' })
-  @ApiStandardResponse(AuthResponseDto)
+  @ApiStandardResponse(TokenResponseDto)
   async login(@Body() dto: LoginDto) {
     const result = await this.loginUseCase.execute(dto);
     return ResponseUtils.successWithData(result);
@@ -59,7 +59,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Validate(RegisterDto)
   @ApiOperation({ summary: 'Register user' })
-  @ApiStandardResponse(AuthResponseDto)
+  @ApiStandardResponse(TokenResponseDto)
   async register(@Body() dto: RegisterDto) {
     const result = await this.registerUseCase.execute(dto);
     return ResponseUtils.successWithData(result);
@@ -70,7 +70,7 @@ export class AuthController {
   @ApiBearerAuth('JWT Auth')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh token' })
-  @ApiStandardResponse(AuthResponseDto)
+  @ApiStandardResponse(TokenResponseDto)
   async refresh(@CurrentUser('id') userId: string) {
     const result = await this.refreshTokenUseCase.execute(userId);
     return ResponseUtils.successWithData(result);
@@ -103,11 +103,10 @@ export class AuthController {
   }
 
   @Delete('logout')
-  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT Auth')
   @ApiOperation({ summary: 'Logout user' })
-  @ApiStandardResponse(AuthResponseDto)
+  @ApiStandardResponse(TokenResponseDto)
   async logout(@CurrentUser('id') userId: string) {
     await this.logoutUseCase.execute(userId);
     return ResponseUtils.successWithData('User logged out successfully');

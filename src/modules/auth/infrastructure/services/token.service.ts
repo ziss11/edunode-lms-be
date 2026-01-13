@@ -50,10 +50,6 @@ export class TokenService {
     });
   }
 
-  getAccessTokenExpiresIn(): number {
-    return Number(this.configService.get<string>('jwt.expiresIn'));
-  }
-
   calculateRefreshTokenExpiry(): Date {
     const expiresIn = Number(
       this.configService.get<string>('jwt.refreshExpiresIn'),
