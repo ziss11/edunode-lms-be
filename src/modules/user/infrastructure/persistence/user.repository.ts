@@ -121,15 +121,6 @@ export class UserRepository implements IUserRepository {
     return UserMapper.toDomain(updated);
   }
 
-  async updatePassword(id: string, password: string): Promise<boolean> {
-    const [updated] = await this.db
-      .update(users)
-      .set({ password, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return !!updated;
-  }
-
   async delete(id: string): Promise<void> {
     await this.db.delete(users).where(eq(users.id, id));
   }

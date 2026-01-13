@@ -54,7 +54,7 @@ export class UserEntity {
     );
   }
 
-  updatePassword(password: Password): UserEntity {
+  changePassword(password: Password): UserEntity {
     return new UserEntity(
       this.id,
       this.email,
@@ -66,6 +66,10 @@ export class UserEntity {
       this.createdAt,
       new Date(),
     );
+  }
+
+  async validatePassword(password: string): Promise<boolean> {
+    return await this.password.compare(password);
   }
 
   activate(): UserEntity {

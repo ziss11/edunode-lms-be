@@ -6,6 +6,7 @@ import type { IUserRepository } from '../../domain/repositories/user.repository.
 import { Email } from '../../domain/value-objects/email.vo';
 import { Password } from '../../domain/value-objects/password.vo';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UserResponseDto } from '../dto/user.response.dto';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -13,7 +14,7 @@ export class CreateUserUseCase {
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(dto: CreateUserDto): Promise<UserEntity> {
+  async execute(dto: CreateUserDto): Promise<UserResponseDto> {
     const exists = await this.userRepository.findByEmail(dto.email);
     if (exists) {
       throw new ConflictException('User already exists');
@@ -22,7 +23,7 @@ export class CreateUserUseCase {
     const email = new Email(dto.email);
     const password = await Password.create(dto.password);
 
-    const user = new UserEntity(
+    const payload = new UserEntity(
       randomUUID(),
       email,
       password,
@@ -34,6 +35,7 @@ export class CreateUserUseCase {
       new Date(),
     );
 
-    return this.userRepository.create(user);
+    const user = await this.userRepository.create(payload);
+    return new UserResponseDto(user);
   }
 }

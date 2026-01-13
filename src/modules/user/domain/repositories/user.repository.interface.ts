@@ -21,6 +21,5 @@ export interface IUserRepository {
     options: FindAllOptions,
   ): Promise<{ users: UserEntity[]; total: number }>;
   update(id: string, user: UserEntity): Promise<UserEntity | null>;
-  updatePassword(id: string, password: string): Promise<boolean>;
   delete(id: string): Promise<void>;
 }

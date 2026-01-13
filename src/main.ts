@@ -76,7 +76,7 @@ async function bootstrap() {
 
   Environment:  ${nodeEnv.padEnd(45)}
   Server:       http://localhost:${port}/${apiPrefix}/${apiVersion}${' '.repeat(22)}
-  Swagger Docs: http://localhost:${port}/api/docs${' '.repeat(23)}                    
+  Swagger Docs: http://localhost:${port}/${apiPrefix}/docs${' '.repeat(23)}                    
 
   📊 Infrastructure Services:                                                         
   - PostgreSQL: localhost:5432                                                        

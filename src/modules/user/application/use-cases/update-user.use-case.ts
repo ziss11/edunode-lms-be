@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions';
-import { UserEntity } from '../../domain/entities/user.entity';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { Email } from '../../domain/value-objects/email.vo';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserResponseDto } from '../dto/user.response.dto';
 
 @Injectable()
 export class UpdateUserUseCase {
@@ -11,7 +11,10 @@ export class UpdateUserUseCase {
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(id: string, dto: UpdateUserDto): Promise<UserEntity | null> {
+  async execute(
+    id: string,
+    dto: UpdateUserDto,
+  ): Promise<UserResponseDto | null> {
     const exists = await this.userRepository.findById(id);
     if (!exists) {
       throw new NotFoundException('User not found');
@@ -23,13 +26,14 @@ export class UpdateUserUseCase {
     }
 
     const email = new Email(dto.email ?? '');
-    const user = exists.update(
+    const payload = exists.update(
       email,
       dto.firstName ?? '',
       dto.lastName ?? '',
       dto.role,
     );
 
-    return this.userRepository.update(id, user);
+    const user = await this.userRepository.update(id, payload);
+    return new UserResponseDto(user!);
   }
 }

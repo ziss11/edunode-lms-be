@@ -15,6 +15,13 @@
       "when": 1768144770272,
       "tag": "0001_misty_nico_minoru",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768316155398,
+      "tag": "0002_left_firedrake",
+      "breakpoints": true
     }
   ]
 }

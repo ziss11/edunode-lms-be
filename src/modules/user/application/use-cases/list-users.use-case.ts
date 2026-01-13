@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UserEntity } from '../../domain/entities/user.entity';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { ListUserQueryDto } from '../dto/queries/list-user.query.dto';
+import { UserResponseDto } from '../dto/user.response.dto';
 
 @Injectable()
 export class ListUsersUseCase {
@@ -11,8 +11,8 @@ export class ListUsersUseCase {
 
   async execute(
     query: ListUserQueryDto,
-  ): Promise<{ users: UserEntity[]; total: number }> {
-    return await this.userRepository.findAll({
+  ): Promise<{ users: UserResponseDto[]; total: number }> {
+    const result = await this.userRepository.findAll({
       page: query.page,
       limit: query.limit,
       orderBy: query.orderBy,
@@ -23,5 +23,9 @@ export class ListUsersUseCase {
         isActive: query.isActive,
       },
     });
+    return {
+      users: result.users.map((user) => new UserResponseDto(user)),
+      total: result.total,
+    };
   }
 }
