@@ -10,8 +10,8 @@ import { Password } from '../../../user/domain/value-objects/password.vo';
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { TokenResponseDto } from '../dto/auth.response.dto';
 import { RegisterDto } from '../dto/register.dto';
+import { TokenResponseDto } from '../dto/token.response.dto';
 
 export class RegisterUseCase {
   constructor(

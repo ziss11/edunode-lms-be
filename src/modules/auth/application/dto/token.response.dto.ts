@@ -6,4 +6,9 @@ export class TokenResponseDto {
 
   @ApiProperty({ example: 'refreshToken' })
   refreshToken: string;
+
+  constructor({ accessToken, refreshToken }: TokenResponseDto) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+  }
 }

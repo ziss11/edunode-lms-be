@@ -24,7 +24,10 @@ export class ListUsersUseCase {
       },
     });
     return {
-      users: result.users.map((user) => new UserResponseDto(user)),
+      users: result.users.map(
+        (user) =>
+          new UserResponseDto({ ...user, email: user.email.getValue() }),
+      ),
       total: result.total,
     };
   }

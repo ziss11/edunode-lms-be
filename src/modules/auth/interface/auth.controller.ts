@@ -16,13 +16,13 @@ import { ApiStandardResponse } from '../../../common/decorators/api-response.dec
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { Public } from '../../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
-import { JwtRefreshGuard } from '../../../common/guards/jwt-refresh.guard';
 import { ResponseUtils } from '../../../common/utils/response.util';
 import { UserResponseDto } from '../../user/application/dto/user.response.dto';
 import { GetUserUseCase } from '../../user/application/use-cases/get-user.use-case';
-import { TokenResponseDto } from '../application/dto/auth.response.dto';
 import { LoginDto } from '../application/dto/login.dto';
+import { RefreshTokenDto } from '../application/dto/refresh-token.dto';
 import { RegisterDto } from '../application/dto/register.dto';
+import { TokenResponseDto } from '../application/dto/token.response.dto';
 import { UpdatePasswordDto } from '../application/dto/update-password.dto';
 import { LoginUseCase } from '../application/use-cases/login.use-case';
 import { LogoutUseCase } from '../application/use-cases/logout.use-case';
@@ -66,13 +66,13 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(JwtRefreshGuard)
-  @ApiBearerAuth('JWT Auth')
+  @Public()
   @HttpCode(HttpStatus.OK)
+  @Validate(RefreshTokenDto)
   @ApiOperation({ summary: 'Refresh token' })
   @ApiStandardResponse(TokenResponseDto)
-  async refresh(@CurrentUser('id') userId: string) {
-    const result = await this.refreshTokenUseCase.execute(userId);
+  async refresh(@Body() dto: RefreshTokenDto) {
+    const result = await this.refreshTokenUseCase.execute(dto);
     return ResponseUtils.successWithData(result);
   }
 

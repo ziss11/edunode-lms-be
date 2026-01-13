@@ -14,6 +14,9 @@ export class GetUserUseCase {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return new UserResponseDto(user);
+    return new UserResponseDto({
+      ...user,
+      email: user.email.getValue(),
+    });
   }
 }

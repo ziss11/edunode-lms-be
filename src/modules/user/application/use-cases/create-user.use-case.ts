@@ -36,6 +36,9 @@ export class CreateUserUseCase {
     );
 
     const user = await this.userRepository.create(payload);
-    return new UserResponseDto(user);
+    return new UserResponseDto({
+      ...user,
+      email: user.email.getValue(),
+    });
   }
 }

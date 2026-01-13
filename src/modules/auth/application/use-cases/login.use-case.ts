@@ -6,8 +6,8 @@ import type { IUserRepository } from '../../../user/domain/repositories/user.rep
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { TokenResponseDto } from '../dto/auth.response.dto';
 import { LoginDto } from '../dto/login.dto';
+import { TokenResponseDto } from '../dto/token.response.dto';
 
 @Injectable()
 export class LoginUseCase {

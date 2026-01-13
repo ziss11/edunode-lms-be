@@ -39,10 +39,4 @@ export class AuthenticationRepository implements IAuthenticationRepository {
       .delete(authentications)
       .where(eq(authentications.userId, userId));
   }
-
-  async deleteByToken(token: string): Promise<void> {
-    await this.db
-      .delete(authentications)
-      .where(eq(authentications.token, token));
-  }
 }

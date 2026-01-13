@@ -34,6 +34,6 @@ export class UpdateUserUseCase {
     );
 
     const user = await this.userRepository.update(id, payload);
-    return new UserResponseDto(user!);
+    return new UserResponseDto({ ...user, email: user?.email.getValue() });
   }
 }

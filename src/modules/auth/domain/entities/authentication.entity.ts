@@ -7,7 +7,7 @@ export class AuthenticationEntity {
     public createdAt: Date,
   ) {}
 
-  isExpired(): boolean {
+  isTokenExpired(): boolean {
     return this.expiresAt < new Date();
   }
 }

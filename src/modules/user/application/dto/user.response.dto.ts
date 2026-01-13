@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRole } from '../../domain/enums/user-role.enum';
 
 export class UserResponseDto {
@@ -24,7 +23,13 @@ export class UserResponseDto {
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z' })
   updatedAt: Date;
 
-  constructor(user: Partial<UserEntity>) {
-    Object.assign(this, user);
+  constructor(user: Partial<UserResponseDto>) {
+    this.id = user.id || this.id;
+    this.email = user.email || this.email;
+    this.fullName = user.fullName || this.fullName;
+    this.role = user.role || this.role;
+    this.isActive = user.isActive || this.isActive;
+    this.createdAt = user.createdAt || this.createdAt;
+    this.updatedAt = user.updatedAt || this.updatedAt;
   }
 }

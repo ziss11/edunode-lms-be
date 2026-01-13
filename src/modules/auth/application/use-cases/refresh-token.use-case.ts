@@ -9,7 +9,8 @@ import type { IUserRepository } from '../../../user/domain/repositories/user.rep
 import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
 import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
-import { TokenResponseDto } from '../dto/auth.response.dto';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { TokenResponseDto } from '../dto/token.response.dto';
 
 export class RefreshTokenUseCase {
   constructor(
@@ -20,15 +21,25 @@ export class RefreshTokenUseCase {
     private readonly tokenService: TokenService,
   ) {}
 
-  async execute(userId: string): Promise<TokenResponseDto> {
-    const auth = await this.authenticationRepository.findByUserId(userId);
+  async execute(dto: RefreshTokenDto): Promise<TokenResponseDto> {
+    const payload = this.tokenService.verifyRefreshToken(dto.refreshToken);
+    if (payload.type !== 'refresh') {
+      throw new UnauthorizedException('Invalid token type');
+    }
+
+    const auth = await this.authenticationRepository.findByUserId(payload.sub);
     if (!auth) {
+      throw new UnauthorizedException('Session not found');
+    }
+
+    const isValidToken = await HashUtil.compare(dto.refreshToken, auth.token);
+    if (!isValidToken) {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const payload = this.tokenService.verifyRefreshToken(auth.token);
-    if (payload.type !== 'refresh') {
-      throw new UnauthorizedException('Invalid token type');
+    if (auth.isTokenExpired()) {
+      await this.authenticationRepository.deleteByUserId(payload.sub);
+      throw new UnauthorizedException('Refresh token is expired');
     }
 
     const user = await this.userRepository.findById(payload.sub);
@@ -39,19 +50,7 @@ export class RefreshTokenUseCase {
     if (!user.isActive) {
       throw new UnauthorizedException('Account is deactivated');
     }
-
-    const hashedToken = await HashUtil.hash(auth.token);
-    const storedToken =
-      await this.authenticationRepository.findByToken(hashedToken);
-    if (!storedToken) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    if (storedToken.isExpired()) {
-      throw new UnauthorizedException('Refresh token is expired');
-    }
-
-    await this.authenticationRepository.deleteByToken(hashedToken);
+    await this.authenticationRepository.deleteByUserId(payload.sub);
 
     const newAccessToken = this.tokenService.generateAccessToken(
       user.id,

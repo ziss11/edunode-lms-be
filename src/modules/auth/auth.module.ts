@@ -11,7 +11,6 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { UpdatePasswordUseCase } from './application/use-cases/update-password.use-case';
 import { AuthenticationRepository } from './infrastructure/persistence/authentication.repository';
 import { TokenService } from './infrastructure/services/token.service';
-import { JwtRefreshStrategy } from './infrastructure/strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { AuthController } from './interface/auth.controller';
 
@@ -38,7 +37,6 @@ import { AuthController } from './interface/auth.controller';
     LogoutUseCase,
     TokenService,
     JwtStrategy,
-    JwtRefreshStrategy,
     {
       provide: 'IAuthenticationRepository',
       useClass: AuthenticationRepository,
