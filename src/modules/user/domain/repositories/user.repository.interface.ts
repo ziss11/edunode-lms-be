@@ -1,7 +1,7 @@
 import { UserEntity } from '../entities/user.entity';
 import { UserRole } from '../enums/user-role.enum';
 
-export interface FindAllOptions {
+export interface UserFindAllOptions {
   page?: number;
   limit?: number;
   orderBy?: 'id' | 'createdAt';
@@ -18,7 +18,7 @@ export interface IUserRepository {
   findById(id: string): Promise<UserEntity | null>;
   findByEmail(email: string): Promise<UserEntity | null>;
   findAll(
-    options: FindAllOptions,
+    options: UserFindAllOptions,
   ): Promise<{ users: UserEntity[]; total: number }>;
   update(id: string, user: UserEntity): Promise<UserEntity | null>;
   delete(id: string): Promise<void>;

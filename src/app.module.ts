@@ -19,6 +19,7 @@ import { DrizzleModule } from './shared/database/postgres/drizzle.module';
 import { RedisModule } from './shared/database/redis/redis.module';
 import { RabbitMQModule } from './shared/messaging/rabbitmq/rabbitmq.module';
 import { MinioModule } from './shared/storage/minio/minio.module';
+import { CourseModule } from './modules/course/course.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MinioModule } from './shared/storage/minio/minio.module';
     MinioModule,
     AuthModule,
     UserModule,
+    CourseModule,
   ],
   controllers: [],
   providers: [

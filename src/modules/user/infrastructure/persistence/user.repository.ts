@@ -15,8 +15,8 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { DRIZZLE_ORM } from '../../../../shared/database/postgres/drizzle.module';
 import { UserEntity } from '../../domain/entities/user.entity';
 import {
-  FindAllOptions,
   IUserRepository,
+  UserFindAllOptions,
 } from '../../domain/repositories/user.repository.interface';
 import { UserMapper } from './mappers/user.mapper';
 import { users } from './schema/user.schema';
@@ -50,7 +50,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findAll(
-    options: FindAllOptions,
+    options: UserFindAllOptions,
   ): Promise<{ users: UserEntity[]; total: number }> {
     const { page = 1, limit = 10, orderBy, orderDirection, filters } = options;
     const offset = (page - 1) * limit;
