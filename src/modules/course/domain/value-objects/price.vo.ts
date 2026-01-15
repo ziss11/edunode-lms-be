@@ -13,6 +13,7 @@ export class Price {
   getAmount(): number {
     return this.amount;
   }
+
   getCurrency(): string {
     return this.currency;
   }

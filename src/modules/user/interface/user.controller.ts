@@ -22,7 +22,7 @@ import { MetaResponse } from '../../../common/responses/meta.response';
 import { ResponseUtils } from '../../../common/utils/response.util';
 import { CreateUserDto } from '../application/dto/create-user.dto';
 import { UserParamDto } from '../application/dto/params/user.param.dto';
-import { ListUserQueryDto } from '../application/dto/queries/list-user.query.dto';
+import { ListUsersQueryDto } from '../application/dto/queries/list-users.query.dto';
 import { UpdateUserDto } from '../application/dto/update-user.dto';
 import { UserResponseDto } from '../application/dto/user.response.dto';
 import { CreateUserUseCase } from '../application/use-cases/create-user.use-case';
@@ -57,11 +57,11 @@ export class UserController {
   @Get()
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
-  @Validate(ListUserQueryDto)
+  @Validate(ListUsersQueryDto)
   @ApiOperation({ summary: 'List all users' })
   @ApiStandardResponse(UserResponseDto, { isArray: true })
   async list(
-    @Query() query: ListUserQueryDto,
+    @Query() query: ListUsersQueryDto,
   ): Promise<BaseListResponse<UserResponseDto>> {
     const { page = 1, limit = 10 } = query;
     const { users, total } = await this.listUsersUseCase.execute(query);

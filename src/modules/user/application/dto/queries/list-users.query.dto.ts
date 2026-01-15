@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { UserRole } from '../../../domain/enums/user-role.enum';
 
-export class ListUserQueryDto {
+export class ListUsersQueryDto {
   @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()

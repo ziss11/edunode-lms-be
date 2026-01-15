@@ -1,6 +1,6 @@
 import { LessonEntity } from '../entities/lesson.entity';
 
-export interface LessonRepositoryInterface {
+export interface ILessonRepository {
   create(lesson: LessonEntity): Promise<LessonEntity>;
   findById(id: string): Promise<LessonEntity | null>;
   findByCourse(courseId: string): Promise<LessonEntity[] | null>;

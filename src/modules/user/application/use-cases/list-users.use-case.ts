@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { ListUserQueryDto } from '../dto/queries/list-user.query.dto';
+import { ListUsersQueryDto } from '../dto/queries/list-users.query.dto';
 import { UserResponseDto } from '../dto/user.response.dto';
 
 @Injectable()
@@ -10,17 +10,17 @@ export class ListUsersUseCase {
   ) {}
 
   async execute(
-    query: ListUserQueryDto,
+    queries: ListUsersQueryDto,
   ): Promise<{ users: UserResponseDto[]; total: number }> {
     const result = await this.userRepository.findAll({
-      page: query.page,
-      limit: query.limit,
-      orderBy: query.orderBy,
-      orderDirection: query.orderDirection,
+      page: queries.page,
+      limit: queries.limit,
+      orderBy: queries.orderBy,
+      orderDirection: queries.orderDirection,
       filters: {
-        search: query.search,
-        role: query.role,
-        isActive: query.isActive,
+        search: queries.search,
+        role: queries.role,
+        isActive: queries.isActive,
       },
     });
     return {

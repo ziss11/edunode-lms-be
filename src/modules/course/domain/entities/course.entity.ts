@@ -5,7 +5,6 @@ export class CourseEntity {
   constructor(
     public readonly id: string,
     public title: string,
-    public slug: string,
     public description: string,
     public price: Price,
     public level: CourseLevel,
@@ -18,28 +17,26 @@ export class CourseEntity {
 
   publish() {
     this.isPublished = true;
-    return true;
+    this.updatedAt = new Date();
   }
 
   unpublish() {
     this.isPublished = false;
-    return true;
+    this.updatedAt = new Date();
   }
 
-  updateDetails(title: string, description: string, level: CourseLevel): void {
+  update(
+    title: string,
+    description: string,
+    level: CourseLevel,
+    price: Price,
+    coverImageUrl?: string,
+  ): void {
     this.title = title;
     this.description = description;
     this.level = level;
-    this.updatedAt = new Date();
-  }
-
-  changePrice(newPrice: Price): void {
-    this.price = newPrice;
-    this.updatedAt = new Date();
-  }
-
-  setThumbnail(url: string): void {
-    this.coverImageUrl = url;
+    this.price = price;
+    this.coverImageUrl = coverImageUrl;
     this.updatedAt = new Date();
   }
 }

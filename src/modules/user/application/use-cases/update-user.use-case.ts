@@ -26,14 +26,9 @@ export class UpdateUserUseCase {
     }
 
     const email = new Email(dto.email ?? '');
-    const payload = exists.update(
-      email,
-      dto.firstName ?? '',
-      dto.lastName ?? '',
-      dto.role,
-    );
+    exists.update(email, dto.firstName ?? '', dto.lastName ?? '', dto.role);
 
-    const user = await this.userRepository.update(id, payload);
+    const user = await this.userRepository.update(id, exists);
     return new UserResponseDto({ ...user, email: user?.email.getValue() });
   }
 }

@@ -25,7 +25,6 @@ export interface CourseFindAllOptions {
 export interface ICourseRepository {
   create(course: CourseEntity): Promise<CourseEntity>;
   findById(id: string): Promise<CourseEntity | null>;
-  findByInstructor(instructorId: string): Promise<CourseEntity[] | null>;
   findAll(
     options: CourseFindAllOptions,
   ): Promise<{ courses: CourseEntity[]; total: number }>;
