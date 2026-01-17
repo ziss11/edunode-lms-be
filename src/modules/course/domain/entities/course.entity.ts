@@ -10,7 +10,7 @@ export class CourseEntity {
     public level: CourseLevel,
     public instructorId: string,
     public isPublished: boolean = false,
-    public coverImageUrl?: string,
+    public coverImageUrl: string | null,
     public createdAt?: Date,
     public updatedAt?: Date,
   ) {}

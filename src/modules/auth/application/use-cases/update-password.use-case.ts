@@ -31,8 +31,8 @@ export class UpdatePasswordUseCase {
 
     const newPassword = await Password.create(dto.newPassword);
 
-    const updatedUser = user.changePassword(newPassword);
-    await this.userRepository.update(id, updatedUser);
+    user.changePassword(newPassword);
+    await this.userRepository.update(id, user);
 
     await this.authenticationRepository.deleteByUserId(id);
   }
