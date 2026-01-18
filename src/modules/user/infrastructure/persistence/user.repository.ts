@@ -1,51 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  and,
-  AnyColumn,
-  asc,
-  desc,
-  eq,
-  ilike,
-  or,
-  SQL,
-  sql,
-  SQLWrapper,
-} from 'drizzle-orm';
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { DRIZZLE_ORM } from '../../../../shared/database/postgres/drizzle.module';
+import { PrismaClient } from '../../../../../generated/prisma/client';
+import { UsersWhereInput } from '../../../../../generated/prisma/models';
+import { PRISMA_ORM } from '../../../../shared/database/postgres/prisma.module';
 import { UserEntity } from '../../domain/entities/user.entity';
 import {
   IUserRepository,
   UserFindAllOptions,
 } from '../../domain/repositories/user.repository.interface';
 import { UserMapper } from './mappers/user.mapper';
-import { users } from './schema/user.schema';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@Inject(DRIZZLE_ORM) private readonly db: PostgresJsDatabase) {}
+  constructor(@Inject(PRISMA_ORM) private readonly db: PrismaClient) {}
 
   async create(user: UserEntity): Promise<UserEntity> {
-    const userData = UserMapper.toPersistence(user);
-    const [created] = await this.db.insert(users).values(userData).returning();
+    const data = UserMapper.toPayload(user);
+    const created = await this.db.users.create({ data });
     return UserMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const [result] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
+    const result = await this.db.users.findFirst({ where: { id } });
     return result ? UserMapper.toDomain(result) : null;
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const [result] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
+    const result = await this.db.users.findFirst({ where: { email } });
     return result ? UserMapper.toDomain(result) : null;
   }
 
@@ -55,73 +35,58 @@ export class UserRepository implements IUserRepository {
     const { page = 1, limit = 10, orderBy, orderDirection, filters } = options;
     const offset = (page - 1) * limit;
 
-    const conditions: SQL[] = [];
+    const conditions: UsersWhereInput = {};
 
     if (filters?.role) {
-      conditions.push(eq(users.role, filters.role));
+      conditions.role = filters.role;
     }
     if (filters?.isActive !== undefined) {
-      conditions.push(eq(users.isActive, filters.isActive ? 'true' : 'false'));
+      conditions.isActive = filters.isActive;
     }
     if (filters?.search) {
-      conditions.push(
-        or(
-          ilike(users.email, `%${filters.search}%`),
-          ilike(users.firstName, `%${filters.search}%`),
-          ilike(users.lastName, `%${filters.search}%`),
-        )!,
-      );
+      conditions.email = {
+        contains: filters.search,
+      };
+      conditions.firstName = {
+        contains: filters.search,
+      };
+      conditions.lastName = {
+        contains: filters.search,
+      };
     }
 
-    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-    let sortColumn: SQLWrapper | AnyColumn = users.createdAt;
-
-    if (orderBy === 'id') sortColumn = users.id;
-    else if (orderBy === 'createdAt') sortColumn = users.createdAt;
-
-    const [userRows, [{ count }]] = await Promise.all([
-      this.db
-        .select()
-        .from(users)
-        .where(whereClause)
-        .limit(limit)
-        .offset(offset)
-        .orderBy(orderDirection === 'asc' ? asc(sortColumn) : desc(sortColumn)),
-      this.db
-        .select({ count: sql<number>`cast(count(*) as integer)` })
-        .from(users)
-        .where(whereClause),
+    const [userRows, count] = await this.db.$transaction([
+      this.db.users.findMany({
+        take: limit,
+        skip: offset,
+        where: conditions,
+        orderBy: {
+          [orderBy as string]: orderDirection,
+        },
+      }),
+      this.db.users.count({ where: conditions }),
     ]);
-
     return {
-      users: userRows.map((row) => UserMapper.toDomain(row)),
+      users: userRows.map((user) => UserMapper.toDomain(user)),
       total: count,
     };
   }
 
   async exists(email: string): Promise<boolean> {
-    const [result] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
+    const result = await this.db.users.findUnique({ where: { email } });
     return !!result;
   }
 
   async update(id: string, user: UserEntity): Promise<UserEntity | null> {
-    const updateData = UserMapper.toPersistence(user);
-    const [updated] = await this.db
-      .update(users)
-      .set({ ...updateData, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    if (!updated) {
-      return null;
-    }
-    return UserMapper.toDomain(updated);
+    const updateData = UserMapper.toPayload(user);
+    const updated = await this.db.users.update({
+      where: { id },
+      data: { ...updateData, updatedAt: new Date() },
+    });
+    return updated ? UserMapper.toDomain(updated) : null;
   }
 
   async delete(id: string): Promise<void> {
-    await this.db.delete(users).where(eq(users.id, id));
+    await this.db.users.delete({ where: { id } });
   }
 }

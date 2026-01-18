@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import type { ILessonRepository } from '../../domain/repositories/lesson.repository.interface';
 import { Duration } from '../../domain/value-objects/duration.vo';
+import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.mapper';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { UpdateLessonDto } from '../dto/update-lesson.dto';
 
@@ -12,7 +13,7 @@ export class AddLessonUseCase {
 
   async execute(
     id: string,
-    lesson: UpdateLessonDto,
+    dto: UpdateLessonDto,
   ): Promise<LessonResponseDto | null> {
     const exists = await this.lessonRepository.findById(id);
     if (!exists) {
@@ -20,26 +21,23 @@ export class AddLessonUseCase {
     }
 
     exists.updateContent(
-      lesson.title || exists.title,
-      lesson.content || exists.content,
+      dto.title || exists.title,
+      dto.content || exists.content,
     );
 
-    if (lesson.order) {
-      exists.reorder(lesson.order);
+    if (dto.order) {
+      exists.reorder(dto.order);
     }
 
-    if (lesson.isFreePreview) {
+    if (dto.isFreePreview) {
       exists.toggleFreePreview();
     }
 
-    if (lesson.videoUrl) {
-      exists.changeVideo(lesson.videoUrl, new Duration(lesson.duration || 0));
+    if (dto.videoUrl) {
+      exists.changeVideo(dto.videoUrl, new Duration(dto.duration || 0));
     }
 
-    const response = await this.lessonRepository.update(id, exists);
-    return new LessonResponseDto({
-      ...response,
-      duration: response?.duration?.getMinutes(),
-    });
+    const updated = await this.lessonRepository.update(id, exists);
+    return updated ? LessonMapper.toResponse(updated) : null;
   }
 }

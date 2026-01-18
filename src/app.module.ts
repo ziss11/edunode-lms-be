@@ -13,13 +13,13 @@ import rabbitmqConfig from './config/rabbitmq.config';
 import redisConfig from './config/redis.config';
 import { validateEnvironment } from './config/validation.schema';
 import { AuthModule } from './modules/auth/auth.module';
+import { CourseModule } from './modules/course/course.module';
 import { UserModule } from './modules/user/user.module';
 import { MongodbModule } from './shared/database/mongodb/mongodb.module';
-import { DrizzleModule } from './shared/database/postgres/drizzle.module';
+import { PrismaModule } from './shared/database/postgres/prisma.module';
 import { RedisModule } from './shared/database/redis/redis.module';
 import { RabbitMQModule } from './shared/messaging/rabbitmq/rabbitmq.module';
 import { MinioModule } from './shared/storage/minio/minio.module';
-import { CourseModule } from './modules/course/course.module';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { CourseModule } from './modules/course/course.module';
       expandVariables: true,
     }),
     CommonModule,
-    DrizzleModule,
+    PrismaModule,
     MongodbModule,
     RedisModule,
     RabbitMQModule.forRoot(),
@@ -55,7 +55,6 @@ import { CourseModule } from './modules/course/course.module';
       useClass: HttpExceptionFilter,
     },
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    // { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
 export class AppModule implements NestModule {

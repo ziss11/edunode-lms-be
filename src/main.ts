@@ -17,7 +17,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // Get Configurations
-  const port = configService.get<number>('port', 3000);
+  const port = configService.get<number>('app.port', 3000);
   const apiPrefix = configService.get<string>('app.apiPrefix', 'api');
   const apiVersion = configService.get<string>('app.apiVersion', 'v1');
   const corsOrigins = configService.get<string>('app.corsOrigins', '*');
@@ -86,6 +86,7 @@ async function bootstrap() {
   - MinIO:      localhost:9000 (Console: 9001)                                        
   `);
 }
+
 bootstrap().catch((err) => {
   console.error('❌ Failed to start the application:', err);
   process.exit(1);

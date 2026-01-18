@@ -1,11 +1,13 @@
+import { Users } from '../../../../../../generated/prisma/client';
+import { UsersCreateInput } from '../../../../../../generated/prisma/models';
+import { UserResponseDto } from '../../../application/dto/user.response.dto';
 import { UserEntity } from '../../../domain/entities/user.entity';
 import { UserRole } from '../../../domain/enums/user-role.enum';
 import { Email } from '../../../domain/value-objects/email.vo';
 import { Password } from '../../../domain/value-objects/password.vo';
-import { UserRow } from '../schema/user.schema';
 
 export class UserMapper {
-  static toDomain(row: UserRow): UserEntity {
+  static toDomain(row: Users): UserEntity {
     return new UserEntity(
       row.id,
       new Email(row.email),
@@ -13,13 +15,25 @@ export class UserMapper {
       row.firstName,
       row.lastName,
       row.role as UserRole,
-      row.isActive === 'true',
+      row.isActive,
       row.createdAt,
       row.updatedAt,
     );
   }
 
-  static toPersistence(entity: UserEntity): UserRow {
+  static toResponse(entity: UserEntity): UserResponseDto {
+    return {
+      id: entity.id,
+      email: entity.email.getValue(),
+      fullName: `${entity.firstName} ${entity.lastName}`,
+      role: entity.role,
+      isActive: entity.isActive,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    };
+  }
+
+  static toPayload(entity: UserEntity): UsersCreateInput {
     return {
       id: entity.id,
       email: entity.email.getValue(),
@@ -27,7 +41,7 @@ export class UserMapper {
       firstName: entity.firstName,
       lastName: entity.lastName,
       role: entity.role,
-      isActive: entity.isActive ? 'true' : 'false',
+      isActive: entity.isActive,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };

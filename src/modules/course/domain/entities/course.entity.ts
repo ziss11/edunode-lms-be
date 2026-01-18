@@ -1,5 +1,7 @@
+import { UserEntity } from '../../../user/domain/entities/user.entity';
 import { CourseLevel } from '../enums/course-level.enum';
 import { Price } from '../value-objects/price.vo';
+import { LessonEntity } from './lesson.entity';
 
 export class CourseEntity {
   constructor(
@@ -13,6 +15,8 @@ export class CourseEntity {
     public coverImageUrl: string | null,
     public createdAt?: Date,
     public updatedAt?: Date,
+    public instructor?: UserEntity,
+    public lessons?: LessonEntity[],
   ) {}
 
   publish() {
@@ -30,7 +34,7 @@ export class CourseEntity {
     description: string,
     level: CourseLevel,
     price: Price,
-    coverImageUrl?: string,
+    coverImageUrl: string | null,
   ): void {
     this.title = title;
     this.description = description;

@@ -1,10 +1,14 @@
+import { Courses } from '../../../../../../generated/prisma/client';
+import { CoursesCreateInput } from '../../../../../../generated/prisma/models';
+import { UserMapper } from '../../../../user/infrastructure/persistence/mappers/user.mapper';
+import { CourseResponseDto } from '../../../application/dto/course.response.dto';
 import { CourseEntity } from '../../../domain/entities/course.entity';
 import { CourseLevel } from '../../../domain/enums/course-level.enum';
 import { Price } from '../../../domain/value-objects/price.vo';
-import type { CourseRow } from '../schema/course.schema';
+import { LessonMapper } from './lesson.mapper';
 
 export class CourseMapper {
-  static toDomain(row: CourseRow): CourseEntity {
+  static toDomain(row: Courses): CourseEntity {
     return new CourseEntity(
       row.id,
       row.instructorId,
@@ -19,18 +23,42 @@ export class CourseMapper {
     );
   }
 
-  static toPersistence(entity: CourseEntity): CourseRow {
+  static toResponse(entity: CourseEntity): CourseResponseDto {
     return {
       id: entity.id,
       title: entity.title,
       description: entity.description,
       price: entity.price.getAmount(),
       level: entity.level,
-      instructorId: entity.instructorId,
+      isPublished: entity.isPublished,
+      coverImageUrl: entity.coverImageUrl,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      instructor: entity.instructor
+        ? UserMapper.toResponse(entity.instructor)
+        : undefined,
+      lessons: (entity.lessons || []).map((lesson) =>
+        LessonMapper.toResponse(lesson),
+      ),
+    };
+  }
+
+  static toPayload(entity: CourseEntity): CoursesCreateInput {
+    return {
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      price: entity.price.getAmount(),
+      level: entity.level,
       isPublished: entity.isPublished,
       coverImageUrl: entity.coverImageUrl,
       createdAt: entity.createdAt ? new Date(entity.createdAt) : new Date(),
       updatedAt: entity.updatedAt ? new Date(entity.updatedAt) : new Date(),
+      instructor: {
+        connect: {
+          id: entity.instructorId,
+        },
+      },
     };
   }
 }

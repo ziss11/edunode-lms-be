@@ -2,12 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 export interface DatabaseConfig {
   postgres: {
-    host: string;
-    port: number;
-    username: string;
-    password: string;
-    database: string;
-    ssl: boolean;
+    databaseUrl: string;
   };
   mongodb: {
     uri: string;
@@ -17,12 +12,7 @@ export interface DatabaseConfig {
 export default registerAs('database', (): DatabaseConfig => {
   const config: DatabaseConfig = {
     postgres: {
-      host: process.env.POSTGRES_HOST || '',
-      port: Number(process.env.POSTGRES_PORT) || 5432,
-      username: process.env.POSTGRES_USER || '',
-      password: process.env.POSTGRES_PASSWORD || '',
-      database: process.env.POSTGRES_DB || '',
-      ssl: process.env.POSTGRES_SSL === 'true',
+      databaseUrl: process.env.DATABASE_URL || '',
     },
     mongodb: {
       uri: process.env.MONGODB_URI || '',

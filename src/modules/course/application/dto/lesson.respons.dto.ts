@@ -13,11 +13,6 @@ export class LessonResponseDto {
   title: string;
 
   @ApiProperty({
-    example: 'Lesson Description',
-  })
-  description: string;
-
-  @ApiProperty({
     example: 'Lesson Content',
   })
   content: string;
@@ -58,7 +53,6 @@ export class LessonResponseDto {
   constructor(lesson: Partial<LessonResponseDto>) {
     this.id = lesson.id || this.id;
     this.title = lesson.title || this.title;
-    this.description = lesson.description || this.description;
     this.content = lesson.content || this.content;
     this.videoUrl = lesson.videoUrl || this.videoUrl;
     this.duration = lesson.duration || this.duration;

@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Authentications {
+  id        String   @id @db.VarChar(255)
+  token     String   @db.VarChar(255)
+  userId    String   @db.VarChar(255)
+  expiresAt DateTime @db.Timestamp(6)
+  createdAt DateTime @db.Timestamp(6)
+
+  @@map("authentications")
+}
+
+model Courses {
+  id            String    @id @db.VarChar(255)
+  title         String    @db.VarChar(255)
+  description   String
+  price         Int
+  level         Levels    @default(beginner)
+  instructorId  String    @db.VarChar(255)
+  isPublished   Boolean   @default(false)
+  coverImageUrl String?   @db.VarChar(255)
+  createdAt     DateTime  @db.Timestamp(6)
+  updatedAt     DateTime  @db.Timestamp(6)
+  instructor    Users     @relation(fields: [instructorId], references: [id], onUpdate: Cascade, onDelete: Cascade, map: "courses_instructorId_users_id_fk")
+  lessons       Lessons[]
+
+  @@index([createdAt], map: "createdAtIdx")
+  @@index([instructorId], map: "instructorIdx")
+  @@map("courses")
+}
+
+model Lessons {
+  id            String   @id @db.VarChar(255)
+  courseId      String   @db.VarChar(255)
+  title         String   @db.VarChar(255)
+  content       String
+  videoUrl      String   @db.VarChar(255)
+  duration      Int
+  order         Int
+  isFreePreview Boolean  @default(false)
+  createdAt     DateTime @db.Timestamp(6)
+  updatedAt     DateTime @db.Timestamp(6)
+  course        Courses  @relation(fields: [courseId], references: [id], onUpdate: Cascade, onDelete: Cascade, map: "lessons_courseId_courses_id_fk")
+
+  @@map("lessons")
+}
+
+model Users {
+  id        String    @id @db.VarChar(255)
+  email     String    @unique(map: "users_email_unique") @db.VarChar(255)
+  password  String
+  firstName String    @db.VarChar(100)
+  lastName  String    @db.VarChar(100)
+  role      Roles     @default(student)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @db.Timestamp(6)
+  updatedAt DateTime  @db.Timestamp(6)
+  courses   Courses[]
+
+  @@map("users")
+}
+
+enum Levels {
+  beginner
+  intermediate
+  advanced
+
+  @@map("levels")
+}
+
+enum Roles {
+  admin
+  instructor
+  student
+
+  @@map("roles")
+}

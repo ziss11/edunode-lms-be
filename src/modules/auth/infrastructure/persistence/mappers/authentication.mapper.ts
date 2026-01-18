@@ -1,8 +1,9 @@
+import { Authentications } from '../../../../../../generated/prisma/client';
+import { AuthenticationsCreateInput } from '../../../../../../generated/prisma/models';
 import { AuthenticationEntity } from '../../../domain/entities/authentication.entity';
-import { AuthenticationRow } from '../schema/authentication.schema';
 
 export class AuthenticationMapper {
-  static toDomain(row: AuthenticationRow): AuthenticationEntity {
+  static toDomain(row: Authentications): AuthenticationEntity {
     return new AuthenticationEntity(
       row.id,
       row.id,
@@ -12,7 +13,7 @@ export class AuthenticationMapper {
     );
   }
 
-  static toPersistence(entity: AuthenticationEntity): AuthenticationRow {
+  static toPayload(entity: AuthenticationEntity): AuthenticationsCreateInput {
     return {
       id: entity.id,
       userId: entity.userId,

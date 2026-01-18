@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
+import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { ListCoursesQueryDto } from '../dto/queries/list-courses.query.dto';
 
@@ -33,12 +34,7 @@ export class ListCoursesUseCase {
       },
     });
     return {
-      courses: result.courses.map((course) => {
-        return new CourseResponseDto({
-          ...course,
-          price: course.price.getAmount(),
-        });
-      }),
+      courses: result.courses.map((course) => CourseMapper.toResponse(course)),
       total: result.total,
     };
   }

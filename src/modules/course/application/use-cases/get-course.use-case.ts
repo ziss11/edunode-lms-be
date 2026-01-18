@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
+import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 
 export class GetCourseUseCase {
@@ -14,9 +15,6 @@ export class GetCourseUseCase {
     if (!course) {
       throw new NotFoundException('Course not found');
     }
-    return new CourseResponseDto({
-      ...course,
-      price: course.price.getAmount(),
-    });
+    return CourseMapper.toResponse(course);
   }
 }

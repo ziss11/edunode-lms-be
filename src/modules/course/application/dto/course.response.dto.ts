@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserResponseDto } from '../../../user/application/dto/user.response.dto';
+import { LessonResponseDto } from './lesson.respons.dto';
 
 export class CourseResponseDto {
   @ApiProperty({
@@ -35,7 +36,7 @@ export class CourseResponseDto {
   @ApiProperty({
     example: 'Course Cover Image URL',
   })
-  coverImageUrl?: string;
+  coverImageUrl: string | null;
 
   @ApiProperty({
     example: 'Course Created At',
@@ -48,7 +49,10 @@ export class CourseResponseDto {
   updatedAt?: Date;
 
   @ApiProperty({ type: UserResponseDto })
-  instructor: UserResponseDto;
+  instructor?: UserResponseDto;
+
+  @ApiProperty({ type: [LessonResponseDto] })
+  lessons?: LessonResponseDto[];
 
   constructor(course: Partial<CourseResponseDto>) {
     this.id = course.id || this.id;
@@ -61,5 +65,6 @@ export class CourseResponseDto {
     this.createdAt = course.createdAt || this.createdAt;
     this.updatedAt = course.updatedAt || this.updatedAt;
     this.instructor = course.instructor || this.instructor;
+    this.lessons = course.lessons || this.lessons;
   }
 }

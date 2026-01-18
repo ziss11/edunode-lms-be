@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions/not-found.exception';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
 import { Price } from '../../domain/value-objects/price.vo';
+import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 
@@ -29,9 +30,6 @@ export class UpdateCourseUseCase {
     );
 
     const result = await this.courseRepository.update(id, exists);
-    return new CourseResponseDto({
-      ...result,
-      price: result?.price?.getAmount(),
-    });
+    return result ? CourseMapper.toResponse(result) : null;
   }
 }
