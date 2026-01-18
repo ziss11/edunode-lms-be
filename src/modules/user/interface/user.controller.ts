@@ -45,7 +45,7 @@ export class UserController {
   ) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiStandardResponse(UserResponseDto, { status: HttpStatus.CREATED })
@@ -55,7 +55,7 @@ export class UserController {
   }
 
   @Get()
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(ListUsersQueryDto)
   @ApiOperation({ summary: 'List all users' })
@@ -75,7 +75,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(UserParamDto)
   @ApiOperation({ summary: 'Get user by id' })
@@ -86,7 +86,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update user by id' })
   @ApiStandardResponse(UserResponseDto)
@@ -96,7 +96,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete user by id' })
   @ApiStandardResponse(undefined, { status: HttpStatus.NO_CONTENT })
