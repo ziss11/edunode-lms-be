@@ -47,6 +47,7 @@ export class UserController {
   @Post()
   @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
+  @Validate(CreateUserDto)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiStandardResponse(UserResponseDto, { status: HttpStatus.CREATED })
   async create(@Body() dto: CreateUserDto) {
@@ -61,10 +62,10 @@ export class UserController {
   @ApiOperation({ summary: 'List all users' })
   @ApiStandardResponse(UserResponseDto, { isArray: true })
   async list(
-    @Query() query: ListUsersQueryDto,
+    @Query() queries: ListUsersQueryDto,
   ): Promise<BaseListResponse<UserResponseDto>> {
-    const { page = 1, limit = 10 } = query;
-    const { users, total } = await this.listUsersUseCase.execute(query);
+    const { page = 1, limit = 10 } = queries;
+    const { users, total } = await this.listUsersUseCase.execute(queries);
     const meta = new MetaResponse({
       page: page,
       limit: limit,
@@ -80,28 +81,31 @@ export class UserController {
   @Validate(UserParamDto)
   @ApiOperation({ summary: 'Get user by id' })
   @ApiStandardResponse(UserResponseDto)
-  async get(@Param() path: UserParamDto) {
-    const user = await this.getUserUseCase.execute(path.id);
+  async get(@Param() params: UserParamDto) {
+    const user = await this.getUserUseCase.execute(params.id);
     return ResponseUtils.successWithData(user);
   }
 
   @Patch(':id')
   @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
+  @Validate(UserParamDto)
+  @Validate(UpdateUserDto)
   @ApiOperation({ summary: 'Update user by id' })
   @ApiStandardResponse(UserResponseDto)
-  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    const user = await this.updateUserUseCase.execute(id, dto);
+  async update(@Param() params: UserParamDto, @Body() dto: UpdateUserDto) {
+    const user = await this.updateUserUseCase.execute(params.id, dto);
     return ResponseUtils.successWithData(user);
   }
 
   @Delete(':id')
   @Roles(Role.SUPERADMIN, Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Validate(UserParamDto)
   @ApiOperation({ summary: 'Delete user by id' })
   @ApiStandardResponse(undefined, { status: HttpStatus.NO_CONTENT })
-  async delete(@Param('id') id: string) {
-    await this.deleteUserUseCase.execute(id);
+  async delete(@Param() params: UserParamDto) {
+    await this.deleteUserUseCase.execute(params.id);
     return ResponseUtils.success();
   }
 }

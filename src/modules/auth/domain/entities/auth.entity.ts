@@ -1,4 +1,4 @@
-export class AuthenticationEntity {
+export class AuthEntity {
   constructor(
     public id: string,
     public userId: string,

@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
+import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 
 @Injectable()
 export class LogoutUseCase {
   constructor(
-    @Inject('IAuthenticationRepository')
-    private readonly authenticationRepository: IAuthenticationRepository,
+    @Inject('IAuthRepository')
+    private readonly authRepository: IAuthRepository,
   ) {}
 
   async execute(userId: string): Promise<void> {
-    await this.authenticationRepository.deleteByUserId(userId);
+    await this.authRepository.deleteByUserId(userId);
   }
 }

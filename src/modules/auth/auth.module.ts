@@ -9,7 +9,7 @@ import { LogoutUseCase } from './application/use-cases/logout.use-case';
 import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
 import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { UpdatePasswordUseCase } from './application/use-cases/update-password.use-case';
-import { AuthenticationRepository } from './infrastructure/persistence/authentication.repository';
+import { AuthRepository } from './infrastructure/persistence/auth.repository';
 import { TokenService } from './infrastructure/services/token.service';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import { AuthController } from './interface/auth.controller';
@@ -38,8 +38,8 @@ import { AuthController } from './interface/auth.controller';
     TokenService,
     JwtStrategy,
     {
-      provide: 'IAuthenticationRepository',
-      useClass: AuthenticationRepository,
+      provide: 'IAuthRepository',
+      useClass: AuthRepository,
     },
   ],
   exports: [TokenService, JwtStrategy],

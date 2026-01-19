@@ -7,8 +7,8 @@ import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import type { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
 import { Email } from '../../../user/domain/value-objects/email.vo';
 import { Password } from '../../../user/domain/value-objects/password.vo';
-import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
-import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
+import { AuthEntity } from '../../domain/entities/auth.entity';
+import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
 import { RegisterDto } from '../dto/register.dto';
 import { TokenResponseDto } from '../dto/token.response.dto';
@@ -16,8 +16,8 @@ import { TokenResponseDto } from '../dto/token.response.dto';
 export class RegisterUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-    @Inject('IAuthenticationRepository')
-    private readonly authenticationRepository: IAuthenticationRepository,
+    @Inject('IAuthRepository')
+    private readonly authRepository: IAuthRepository,
     private readonly tokenService: TokenService,
   ) {}
 
@@ -54,14 +54,14 @@ export class RegisterUseCase {
       createdUser.role,
     );
 
-    const refreshPayload = new AuthenticationEntity(
+    const refreshPayload = new AuthEntity(
       randomUUID(),
       createdUser.id,
       await HashUtil.hash(refreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),
       new Date(),
     );
-    await this.authenticationRepository.create(refreshPayload);
+    await this.authRepository.create(refreshPayload);
 
     return {
       accessToken,

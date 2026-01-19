@@ -3,8 +3,8 @@ import { randomUUID } from 'crypto';
 import { UnauthorizedException } from '../../../../common/exceptions';
 import { HashUtil } from '../../../../common/utils/hash.util';
 import type { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
-import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
-import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
+import { AuthEntity } from '../../domain/entities/auth.entity';
+import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
 import { LoginDto } from '../dto/login.dto';
 import { TokenResponseDto } from '../dto/token.response.dto';
@@ -13,8 +13,8 @@ import { TokenResponseDto } from '../dto/token.response.dto';
 export class LoginUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-    @Inject('IAuthenticationRepository')
-    private readonly refreshTokenRepository: IAuthenticationRepository,
+    @Inject('IAuthRepository')
+    private readonly authRepository: IAuthRepository,
     private readonly tokenService: TokenService,
   ) {}
 
@@ -44,14 +44,14 @@ export class LoginUseCase {
       user.role,
     );
 
-    const payload = new AuthenticationEntity(
+    const payload = new AuthEntity(
       randomUUID(),
       user.id,
       await HashUtil.hash(refreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),
       new Date(),
     );
-    await this.refreshTokenRepository.create(payload);
+    await this.authRepository.create(payload);
 
     return {
       accessToken,

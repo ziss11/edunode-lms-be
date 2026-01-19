@@ -6,8 +6,8 @@ import {
 } from '../../../../common/exceptions';
 import { HashUtil } from '../../../../common/utils/hash.util';
 import type { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
-import { AuthenticationEntity } from '../../domain/entities/authentication.entity';
-import type { IAuthenticationRepository } from '../../domain/repositories/authentication.repository.interface';
+import { AuthEntity } from '../../domain/entities/auth.entity';
+import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { TokenResponseDto } from '../dto/token.response.dto';
@@ -16,8 +16,8 @@ export class RefreshTokenUseCase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-    @Inject('IAuthenticationRepository')
-    private readonly authenticationRepository: IAuthenticationRepository,
+    @Inject('IAuthRepository')
+    private readonly authRepository: IAuthRepository,
     private readonly tokenService: TokenService,
   ) {}
 
@@ -27,7 +27,7 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('Invalid token type');
     }
 
-    const auth = await this.authenticationRepository.findByUserId(payload.sub);
+    const auth = await this.authRepository.findByUserId(payload.sub);
     if (!auth) {
       throw new UnauthorizedException('Session not found');
     }
@@ -38,7 +38,7 @@ export class RefreshTokenUseCase {
     }
 
     if (auth.isTokenExpired()) {
-      await this.authenticationRepository.deleteByUserId(payload.sub);
+      await this.authRepository.deleteByUserId(payload.sub);
       throw new UnauthorizedException('Refresh token is expired');
     }
 
@@ -50,7 +50,7 @@ export class RefreshTokenUseCase {
     if (!user.isActive) {
       throw new UnauthorizedException('Account is deactivated');
     }
-    await this.authenticationRepository.deleteByUserId(payload.sub);
+    await this.authRepository.deleteByUserId(payload.sub);
 
     const newAccessToken = this.tokenService.generateAccessToken(
       user.id,
@@ -63,14 +63,14 @@ export class RefreshTokenUseCase {
       user.role,
     );
 
-    const refreshTokenPayload = new AuthenticationEntity(
+    const refreshTokenPayload = new AuthEntity(
       randomUUID(),
       user.id,
       await HashUtil.hash(newRefreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),
       new Date(),
     );
-    await this.authenticationRepository.create(refreshTokenPayload);
+    await this.authRepository.create(refreshTokenPayload);
 
     return {
       accessToken: newAccessToken,
