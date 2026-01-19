@@ -100,10 +100,10 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(id: string, user: UserEntity): Promise<UserEntity> {
-    const updateData = UserMapper.toPayload(user);
+    const data = UserMapper.toPayload(user);
     const updated = await this.db.users.update({
       where: { id },
-      data: { ...updateData, updatedAt: new Date() },
+      data: { ...data, updatedAt: new Date() },
     });
 
     const result = UserMapper.toDomain(updated);

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEnum,
@@ -9,63 +9,53 @@ import {
 import { CourseLevel } from '../../../domain/enums/course-level.enum';
 
 export class ListCoursesQueryDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   page?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   limit?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsEnum(['id', 'createdAt'])
   @IsOptional()
   orderBy?: 'id' | 'createdAt';
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsEnum(['asc', 'desc'])
   @IsOptional()
   orderDirection?: 'asc' | 'desc';
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   search?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   instructorId?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsEnum(CourseLevel)
   @IsOptional()
   level?: CourseLevel;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   minPrice?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   maxPrice?: number;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  minDuration?: number;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  maxDuration?: number;
 }

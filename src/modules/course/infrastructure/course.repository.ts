@@ -116,11 +116,11 @@ export class CourseRepository implements ICourseRepository {
   }
 
   async update(id: string, course: CourseEntity): Promise<CourseEntity> {
-    const dto = CourseMapper.toPayload(course);
+    const data = CourseMapper.toPayload(course);
     const updated = await this.db.courses.update({
       where: { id },
       data: {
-        ...dto,
+        ...data,
         updatedAt: new Date(),
       },
       include: {

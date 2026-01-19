@@ -1,54 +1,50 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CourseResponseDto } from './course.response.dto';
 
 export class LessonResponseDto {
   @ApiProperty({
-    example: 'Lesson ID',
+    example: 'id',
   })
   id: string;
 
   @ApiProperty({
-    example: 'Lesson Title',
+    example: 'title',
   })
   title: string;
 
   @ApiProperty({
-    example: 'Lesson Content',
+    example: 'content',
   })
   content: string;
 
   @ApiProperty({
-    example: 'Lesson Video URL',
+    example: 'videoUrl',
   })
   videoUrl: string;
 
   @ApiProperty({
-    example: 'Lesson Duration',
+    example: 'duration',
   })
   duration: number;
 
   @ApiProperty({
-    example: 'Lesson Order',
+    example: 'order',
   })
   order: number;
 
   @ApiProperty({
-    example: 'Lesson Is Free Preview',
+    example: true,
   })
   isFreePreview: boolean;
 
   @ApiProperty({
-    example: 'Lesson Created At',
+    example: '2026-01-19T23:25:09.000Z',
   })
   createdAt?: Date;
 
   @ApiProperty({
-    example: 'Lesson Updated At',
+    example: '2026-01-19T23:25:09.000Z',
   })
   updatedAt?: Date;
-
-  @ApiProperty({ type: CourseResponseDto })
-  course?: CourseResponseDto;
 
   constructor(lesson: Partial<LessonResponseDto>) {
     this.id = lesson.id || this.id;
@@ -60,6 +56,5 @@ export class LessonResponseDto {
     this.isFreePreview = lesson.isFreePreview || this.isFreePreview;
     this.createdAt = lesson.createdAt || this.createdAt;
     this.updatedAt = lesson.updatedAt || this.updatedAt;
-    this.course = lesson.course || this.course;
   }
 }

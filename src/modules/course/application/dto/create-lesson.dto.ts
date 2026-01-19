@@ -3,7 +3,7 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class CreateLessonDto {
   @ApiProperty({
-    example: 'Lesson Title',
+    example: 'title',
   })
   @IsString({
     message: 'Title must be a string',
@@ -11,7 +11,7 @@ export class CreateLessonDto {
   title: string;
 
   @ApiProperty({
-    example: 'Lesson Course ID',
+    example: 'courseId',
   })
   @IsString({
     message: 'Course ID must be a string',
@@ -19,7 +19,7 @@ export class CreateLessonDto {
   courseId: string;
 
   @ApiProperty({
-    example: 'Lesson Description',
+    example: 'description',
   })
   @IsString({
     message: 'Description must be a string',
@@ -27,7 +27,7 @@ export class CreateLessonDto {
   description: string;
 
   @ApiProperty({
-    example: 'Lesson Content',
+    example: 'content',
   })
   @IsString({
     message: 'Content must be a string',
@@ -35,7 +35,7 @@ export class CreateLessonDto {
   content: string;
 
   @ApiProperty({
-    example: 'Lesson Video URL',
+    example: 'videoUrl',
   })
   @IsString({
     message: 'Video URL must be a string',
@@ -43,7 +43,7 @@ export class CreateLessonDto {
   videoUrl: string;
 
   @ApiProperty({
-    example: 'Lesson Duration',
+    example: 0,
   })
   @IsNumber(
     {},
@@ -54,7 +54,7 @@ export class CreateLessonDto {
   duration: number;
 
   @ApiProperty({
-    example: 'Lesson Order',
+    example: 0,
   })
   @IsNumber(
     {},
@@ -65,7 +65,7 @@ export class CreateLessonDto {
   order: number;
 
   @ApiProperty({
-    example: 'Lesson Is Free Preview',
+    example: true,
   })
   @IsBoolean({
     message: 'Is Free Preview must be a boolean',

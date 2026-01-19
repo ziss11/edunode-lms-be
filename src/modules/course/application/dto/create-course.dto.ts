@@ -4,7 +4,7 @@ import { CourseLevel } from '../../domain/enums/course-level.enum';
 
 export class CreateCourseDto {
   @ApiProperty({
-    example: 'Course Title',
+    example: 'id',
   })
   @IsString({
     message: 'Title must be a string',
@@ -12,7 +12,7 @@ export class CreateCourseDto {
   title: string;
 
   @ApiProperty({
-    example: 'Course Description',
+    example: 'description',
   })
   @IsString({
     message: 'Description must be a string',
@@ -20,13 +20,13 @@ export class CreateCourseDto {
   description: string;
 
   @ApiProperty({
-    example: 'Instructor ID',
+    example: 'instructorId',
   })
   @IsString()
   instructorId: string;
 
   @ApiProperty({
-    example: 'Course Level',
+    example: CourseLevel.BEGINNER,
   })
   @IsEnum(CourseLevel, {
     message: 'Level must be a valid course level',
@@ -34,7 +34,7 @@ export class CreateCourseDto {
   level: CourseLevel;
 
   @ApiProperty({
-    example: 'Course Price',
+    example: 0,
   })
   @IsNumber(
     {},
@@ -45,7 +45,7 @@ export class CreateCourseDto {
   price: number;
 
   @ApiProperty({
-    example: 'Course Duration',
+    example: 0,
   })
   @IsNumber(
     {},
@@ -56,7 +56,7 @@ export class CreateCourseDto {
   duration: number;
 
   @ApiProperty({
-    example: 'Course Is Published',
+    example: true,
   })
   @IsBoolean({
     message: 'Is Published must be a boolean',
@@ -64,7 +64,7 @@ export class CreateCourseDto {
   isPublished: boolean;
 
   @ApiProperty({
-    example: 'Course Cover Image URL',
+    example: 'https://example.com/cover-image.jpg',
   })
   @IsString({
     message: 'Cover Image URL must be a string',

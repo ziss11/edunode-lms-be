@@ -4,47 +4,47 @@ import { LessonResponseDto } from './lesson.respons.dto';
 
 export class CourseResponseDto {
   @ApiProperty({
-    example: 'Course ID',
+    example: 'id',
   })
   id: string;
 
   @ApiProperty({
-    example: 'Course Title',
+    example: 'title',
   })
   title: string;
 
   @ApiProperty({
-    example: 'Course Description',
+    example: 'description',
   })
   description: string;
 
   @ApiProperty({
-    example: 'Course Level',
+    example: 'level',
   })
   level: string;
 
   @ApiProperty({
-    example: 'Course Price',
+    example: 'price',
   })
   price: number;
 
   @ApiProperty({
-    example: 'Course Is Published',
+    example: 'isPublished',
   })
   isPublished: boolean;
 
   @ApiProperty({
-    example: 'Course Cover Image URL',
+    example: 'coverImageUrl',
   })
   coverImageUrl: string | null;
 
   @ApiProperty({
-    example: 'Course Created At',
+    example: '2026-01-19T23:25:09.000Z',
   })
   createdAt?: Date;
 
   @ApiProperty({
-    example: 'Course Updated At',
+    example: '2026-01-19T23:25:09.000Z',
   })
   updatedAt?: Date;
 
