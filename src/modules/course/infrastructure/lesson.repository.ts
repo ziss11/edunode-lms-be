@@ -50,7 +50,14 @@ export class LessonRepository implements ILessonRepository {
     const updated = await this.db.lessons.update({
       where: { id },
       data,
-      include: { course: true },
+      include: {
+        course: {
+          include: {
+            instructor: true,
+            lessons: true,
+          },
+        },
+      },
     });
 
     const result = LessonMapper.toDomain(updated);
