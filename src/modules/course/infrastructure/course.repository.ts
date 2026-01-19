@@ -26,10 +26,18 @@ export class CourseRepository implements ICourseRepository {
         lessons: true,
       },
     });
-    return CourseMapper.toDomain(created);
+
+    const result = CourseMapper.toDomain(created);
+    await this.courseCacheService.set(result.id, result);
+    await this.courseCacheService.invalidateListCache();
+
+    return result;
   }
 
   async findById(id: string): Promise<CourseEntity | null> {
+    const cached = await this.courseCacheService.get(id);
+    if (cached) return cached;
+
     const course = await this.db.courses.findUnique({
       where: { id },
       include: {
@@ -37,12 +45,18 @@ export class CourseRepository implements ICourseRepository {
         lessons: true,
       },
     });
-    return course ? CourseMapper.toDomain(course) : null;
+    const result = course ? CourseMapper.toDomain(course) : null;
+    if (result) await this.courseCacheService.set(id, result);
+
+    return result;
   }
 
   async findAll(
     options: CourseFindAllOptions,
   ): Promise<{ courses: CourseEntity[]; total: number }> {
+    const cached = await this.courseCacheService.list(options);
+    if (cached) return cached;
+
     const { page = 1, limit = 10, orderBy, orderDirection, filters } = options;
     const offset = (page - 1) * limit;
 
@@ -91,10 +105,14 @@ export class CourseRepository implements ICourseRepository {
       }),
       this.db.courses.count({ where: conditions }),
     ]);
-    return {
+
+    const result = {
       courses: courseRows.map((user) => CourseMapper.toDomain(user)),
       total: count,
     };
+    await this.courseCacheService.setList(options, result);
+
+    return result;
   }
 
   async update(id: string, course: CourseEntity): Promise<CourseEntity> {
@@ -110,10 +128,17 @@ export class CourseRepository implements ICourseRepository {
         lessons: true,
       },
     });
-    return CourseMapper.toDomain(updated);
+
+    const result = CourseMapper.toDomain(updated);
+    await this.courseCacheService.set(id, result);
+    await this.courseCacheService.invalidateListCache();
+
+    return result;
   }
 
   async delete(id: string): Promise<void> {
     await this.db.courses.delete({ where: { id } });
+    await this.courseCacheService.delete(id);
+    await this.courseCacheService.invalidateListCache();
   }
 }

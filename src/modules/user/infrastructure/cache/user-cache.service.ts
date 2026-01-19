@@ -7,8 +7,9 @@ import { UserFindAllOptions } from '../../domain/repositories/user.repository.in
 export class UserCacheService {
   private readonly TTL_DETAIL = 3600;
   private readonly TTL_LIST = 300;
+
   private readonly PREFIX = 'users:';
-  private readonly VERSION_KEY = 'users:version';
+  private readonly VERSION_KEY = `${this.PREFIX}version`;
 
   constructor(private readonly redisService: RedisService) {}
 
