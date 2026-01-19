@@ -52,8 +52,8 @@ export class CourseMapper {
       level: entity.level,
       isPublished: entity.isPublished,
       coverImageUrl: entity.coverImageUrl,
-      createdAt: entity.createdAt ? new Date(entity.createdAt) : new Date(),
-      updatedAt: entity.updatedAt ? new Date(entity.updatedAt) : new Date(),
+      createdAt: entity.createdAt || new Date(),
+      updatedAt: entity.updatedAt || new Date(),
       instructor: {
         connect: {
           id: entity.instructorId,

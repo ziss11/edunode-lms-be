@@ -17,10 +17,10 @@ export class CourseRepository implements ICourseRepository {
     private readonly courseCacheService: CourseCacheService,
   ) {}
 
-  async create(dto: CourseEntity): Promise<CourseEntity> {
-    const data = CourseMapper.toPayload(dto);
-    const course = await this.db.courses.create({ data });
-    return CourseMapper.toDomain(course);
+  async create(course: CourseEntity): Promise<CourseEntity> {
+    const data = CourseMapper.toPayload(course);
+    const created = await this.db.courses.create({ data });
+    return CourseMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<CourseEntity | null> {
