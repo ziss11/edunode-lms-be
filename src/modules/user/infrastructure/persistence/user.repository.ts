@@ -7,21 +7,36 @@ import {
   IUserRepository,
   UserFindAllOptions,
 } from '../../domain/repositories/user.repository.interface';
+import { UserCacheService } from '../cache/user-cache.service';
 import { UserMapper } from './mappers/user.mapper';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@Inject(PRISMA_ORM) private readonly db: PrismaClient) {}
+  constructor(
+    @Inject(PRISMA_ORM) private readonly db: PrismaClient,
+    private readonly userCacheService: UserCacheService,
+  ) {}
 
   async create(user: UserEntity): Promise<UserEntity> {
     const data = UserMapper.toPayload(user);
     const created = await this.db.users.create({ data });
-    return UserMapper.toDomain(created);
+
+    const result = UserMapper.toDomain(created);
+    await this.userCacheService.set(result.id, result);
+    await this.userCacheService.invalidateListCache();
+
+    return result;
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const result = await this.db.users.findFirst({ where: { id } });
-    return result ? UserMapper.toDomain(result) : null;
+    const cached = await this.userCacheService.get(id);
+    if (cached) return cached;
+
+    const user = await this.db.users.findFirst({ where: { id } });
+    const result = user ? UserMapper.toDomain(user) : null;
+    if (result) await this.userCacheService.set(id, result);
+
+    return result;
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -32,6 +47,9 @@ export class UserRepository implements IUserRepository {
   async findAll(
     options: UserFindAllOptions,
   ): Promise<{ users: UserEntity[]; total: number }> {
+    const cached = await this.userCacheService.list(options);
+    if (cached) return cached;
+
     const { page = 1, limit = 10, orderBy, orderDirection, filters } = options;
     const offset = (page - 1) * limit;
 
@@ -66,10 +84,14 @@ export class UserRepository implements IUserRepository {
       }),
       this.db.users.count({ where: conditions }),
     ]);
-    return {
+
+    const result = {
       users: userRows.map((user) => UserMapper.toDomain(user)),
       total: count,
     };
+    await this.userCacheService.setList(options, result);
+
+    return result;
   }
 
   async exists(email: string): Promise<boolean> {
@@ -83,10 +105,17 @@ export class UserRepository implements IUserRepository {
       where: { id },
       data: { ...updateData, updatedAt: new Date() },
     });
-    return UserMapper.toDomain(updated);
+
+    const result = UserMapper.toDomain(updated);
+    await this.userCacheService.set(id, result);
+    await this.userCacheService.invalidateListCache();
+
+    return result;
   }
 
   async delete(id: string): Promise<void> {
     await this.db.users.delete({ where: { id } });
+    await this.userCacheService.delete(id);
+    await this.userCacheService.invalidateListCache();
   }
 }
