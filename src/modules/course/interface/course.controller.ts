@@ -28,11 +28,13 @@ import { CreateCourseUseCase } from '../application/use-cases/create-course.use-
 import { DeleteCourseUseCase } from '../application/use-cases/delete-course.use-case';
 import { GetCourseUseCase } from '../application/use-cases/get-course.use-case';
 import { ListCoursesUseCase } from '../application/use-cases/list-courses.use-case';
+import { PublishCourseUseCase } from '../application/use-cases/publish-course.use-case';
+import { UnpublishCourseUseCase } from '../application/use-cases/unpublish-course.use-case';
 import { UpdateCourseUseCase } from '../application/use-cases/update-course.use-case';
 
 @ApiTags('Courses')
 @Controller('courses')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT Auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CourseController {
   constructor(
@@ -41,6 +43,8 @@ export class CourseController {
     private readonly listCoursesUseCase: ListCoursesUseCase,
     private readonly updateCourseUseCase: UpdateCourseUseCase,
     private readonly deleteCourseUseCase: DeleteCourseUseCase,
+    private readonly publishCourseUseCase: PublishCourseUseCase,
+    private readonly unpublishCourseUseCase: UnpublishCourseUseCase,
   ) {}
 
   @Post()
@@ -107,5 +111,27 @@ export class CourseController {
   async delete(@Param() params: CourseParamDto) {
     await this.deleteCourseUseCase.execute(params.id);
     return ResponseUtils.success();
+  }
+
+  @Patch(':id/publish')
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Validate(CourseParamDto)
+  @ApiOperation({ summary: 'Publish course' })
+  @ApiStandardResponse(CourseResponseDto)
+  async publish(@Param() params: CourseParamDto) {
+    const result = await this.publishCourseUseCase.execute(params.id);
+    return ResponseUtils.successWithData(result);
+  }
+
+  @Patch(':id/unpublish')
+  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @Validate(CourseParamDto)
+  @ApiOperation({ summary: 'Unpublish course' })
+  @ApiStandardResponse(CourseResponseDto)
+  async unpublish(@Param() params: CourseParamDto) {
+    const result = await this.unpublishCourseUseCase.execute(params.id);
+    return ResponseUtils.successWithData(result);
   }
 }
