@@ -12,14 +12,9 @@ export class UpdateCourseUseCase {
     private readonly courseRepository: ICourseRepository,
   ) {}
 
-  async execute(
-    id: string,
-    dto: UpdateCourseDto,
-  ): Promise<CourseResponseDto | null> {
+  async execute(id: string, dto: UpdateCourseDto): Promise<CourseResponseDto> {
     const exists = await this.courseRepository.findById(id);
-    if (!exists) {
-      throw new NotFoundException('Course not found');
-    }
+    if (!exists) throw new NotFoundException('Course not found');
 
     exists.update(
       dto.title || exists.title,
@@ -30,6 +25,6 @@ export class UpdateCourseUseCase {
     );
 
     const result = await this.courseRepository.update(id, exists);
-    return result ? CourseMapper.toResponse(result) : null;
+    return CourseMapper.toResponse(result);
   }
 }

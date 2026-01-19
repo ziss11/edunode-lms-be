@@ -7,7 +7,7 @@ import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.ma
 import { CreateLessonDto } from '../dto/create-lesson.dto';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 
-export class AddLessonUseCase {
+export class CreateLessonUseCase {
   constructor(
     @Inject('ILessonRepository')
     private readonly lessonRepository: ILessonRepository,

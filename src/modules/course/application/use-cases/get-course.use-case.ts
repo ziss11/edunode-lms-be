@@ -10,11 +10,10 @@ export class GetCourseUseCase {
     private readonly courseRepository: ICourseRepository,
   ) {}
 
-  async execute(id: string): Promise<CourseResponseDto | null> {
+  async execute(id: string): Promise<CourseResponseDto> {
     const course = await this.courseRepository.findById(id);
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
+    if (!course) throw new NotFoundException('Course not found');
+
     return CourseMapper.toResponse(course);
   }
 }

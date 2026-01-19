@@ -20,6 +20,6 @@ export interface IUserRepository {
   findAll(
     options: UserFindAllOptions,
   ): Promise<{ users: UserEntity[]; total: number }>;
-  update(id: string, user: UserEntity): Promise<UserEntity | null>;
+  update(id: string, user: UserEntity): Promise<UserEntity>;
   delete(id: string): Promise<void>;
 }

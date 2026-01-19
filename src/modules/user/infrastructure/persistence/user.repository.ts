@@ -77,13 +77,13 @@ export class UserRepository implements IUserRepository {
     return !!result;
   }
 
-  async update(id: string, user: UserEntity): Promise<UserEntity | null> {
+  async update(id: string, user: UserEntity): Promise<UserEntity> {
     const updateData = UserMapper.toPayload(user);
     const updated = await this.db.users.update({
       where: { id },
       data: { ...updateData, updatedAt: new Date() },
     });
-    return updated ? UserMapper.toDomain(updated) : null;
+    return UserMapper.toDomain(updated);
   }
 
   async delete(id: string): Promise<void> {

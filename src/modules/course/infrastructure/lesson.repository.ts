@@ -11,34 +11,32 @@ export class LessonRepository implements ILessonRepository {
 
   async create(lesson: LessonEntity): Promise<LessonEntity> {
     const data = LessonMapper.toPayload(lesson);
-    const created = await this.db.lessons.create({ data });
+    const created = await this.db.lessons.create({
+      data,
+      include: { course: true },
+    });
     return LessonMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<LessonEntity | null> {
-    const course = await this.db.lessons.findUnique({ where: { id } });
+    const course = await this.db.lessons.findUnique({
+      where: { id },
+      include: { course: true },
+    });
     return course ? LessonMapper.toDomain(course) : null;
   }
 
-  async findByCourse(courseId: string): Promise<LessonEntity[] | null> {
-    const course = await this.db.lessons.findMany({ where: { courseId } });
-    return course ? course.map((row) => LessonMapper.toDomain(row)) : null;
-  }
-
-  async update(id: string, lesson: LessonEntity): Promise<LessonEntity | null> {
+  async update(id: string, lesson: LessonEntity): Promise<LessonEntity> {
     const data = LessonMapper.toPayload(lesson);
-    const updated = await this.db.lessons.update({ where: { id }, data });
-    return updated ? LessonMapper.toDomain(updated) : null;
+    const updated = await this.db.lessons.update({
+      where: { id },
+      data,
+      include: { course: true },
+    });
+    return LessonMapper.toDomain(updated);
   }
 
   async delete(id: string): Promise<void> {
     await this.db.lessons.delete({ where: { id } });
-  }
-
-  async reorder(id: string, order: number): Promise<void> {
-    await this.db.lessons.update({
-      where: { id },
-      data: { order },
-    });
   }
 }

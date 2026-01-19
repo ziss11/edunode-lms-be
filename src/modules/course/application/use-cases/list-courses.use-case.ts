@@ -27,10 +27,6 @@ export class ListCoursesUseCase {
           min: queries.minPrice,
           max: queries.maxPrice,
         },
-        duration: {
-          min: queries.minDuration,
-          max: queries.maxDuration,
-        },
       },
     });
     return {

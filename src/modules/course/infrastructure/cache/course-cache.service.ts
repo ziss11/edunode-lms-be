@@ -4,6 +4,9 @@ import { CourseEntity } from '../../domain/entities/course.entity';
 
 @Injectable()
 export class CourseCacheService {
+  private readonly TTL = 3600;
+  private readonly PREFIX = 'courses:';
+
   constructor(private readonly redisService: RedisService) {}
 
   async getCourses() {

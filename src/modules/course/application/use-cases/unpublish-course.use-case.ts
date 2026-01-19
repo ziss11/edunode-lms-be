@@ -10,9 +10,7 @@ export class UnpublishCourseUseCase {
 
   async execute(id: string): Promise<void> {
     const exists = await this.courseRepository.findById(id);
-    if (!exists) {
-      throw new NotFoundException('Course not found');
-    }
+    if (!exists) throw new NotFoundException('Course not found');
 
     exists.unpublish();
     await this.courseRepository.update(id, exists);

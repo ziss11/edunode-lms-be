@@ -24,6 +24,6 @@ export interface ICourseRepository {
   findAll(
     options: CourseFindAllOptions,
   ): Promise<{ courses: CourseEntity[]; total: number }>;
-  update(id: string, course: CourseEntity): Promise<CourseEntity | null>;
+  update(id: string, course: CourseEntity): Promise<CourseEntity>;
   delete(id: string): Promise<void>;
 }

@@ -10,9 +10,7 @@ export class PublishCourseUseCase {
 
   async execute(id: string): Promise<void> {
     const exists = await this.courseRepository.findById(id);
-    if (!exists) {
-      throw new NotFoundException('Course not found');
-    }
+    if (!exists) throw new NotFoundException('Course not found');
 
     exists.publish();
     await this.courseRepository.update(id, exists);

@@ -19,12 +19,24 @@ export class CourseRepository implements ICourseRepository {
 
   async create(course: CourseEntity): Promise<CourseEntity> {
     const data = CourseMapper.toPayload(course);
-    const created = await this.db.courses.create({ data });
+    const created = await this.db.courses.create({
+      data,
+      include: {
+        instructor: true,
+        lessons: true,
+      },
+    });
     return CourseMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<CourseEntity | null> {
-    const course = await this.db.courses.findUnique({ where: { id } });
+    const course = await this.db.courses.findUnique({
+      where: { id },
+      include: {
+        instructor: true,
+        lessons: true,
+      },
+    });
     return course ? CourseMapper.toDomain(course) : null;
   }
 
@@ -72,6 +84,10 @@ export class CourseRepository implements ICourseRepository {
         orderBy: {
           [orderBy as string]: orderDirection,
         },
+        include: {
+          instructor: true,
+          lessons: true,
+        },
       }),
       this.db.courses.count({ where: conditions }),
     ]);
@@ -81,13 +97,20 @@ export class CourseRepository implements ICourseRepository {
     };
   }
 
-  async update(id: string, course: CourseEntity): Promise<CourseEntity | null> {
+  async update(id: string, course: CourseEntity): Promise<CourseEntity> {
     const dto = CourseMapper.toPayload(course);
     const updated = await this.db.courses.update({
       where: { id },
-      data: { ...dto, updatedAt: new Date() },
+      data: {
+        ...dto,
+        updatedAt: new Date(),
+      },
+      include: {
+        instructor: true,
+        lessons: true,
+      },
     });
-    return updated ? CourseMapper.toDomain(updated) : null;
+    return CourseMapper.toDomain(updated);
   }
 
   async delete(id: string): Promise<void> {
