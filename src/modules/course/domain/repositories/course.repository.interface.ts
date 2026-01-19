@@ -15,10 +15,6 @@ export interface CourseFindAllOptions {
       min?: number;
       max?: number;
     };
-    duration?: {
-      min?: number;
-      max?: number;
-    };
   };
 }
 
