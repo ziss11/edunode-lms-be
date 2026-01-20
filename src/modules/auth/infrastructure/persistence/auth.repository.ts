@@ -28,6 +28,17 @@ export class AuthRepository implements IAuthRepository {
     return result ? AuthMapper.toDomain(result) : null;
   }
 
+  async findById(id: string): Promise<AuthEntity | null> {
+    const result = await this.db.authentications.findUnique({
+      where: { id },
+    });
+    return result ? AuthMapper.toDomain(result) : null;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.db.authentications.delete({ where: { id } });
+  }
+
   async deleteByUserId(userId: string): Promise<void> {
     await this.db.authentications.deleteMany({ where: { userId } });
   }

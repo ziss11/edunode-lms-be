@@ -28,24 +28,27 @@ export class LoginUseCase {
       throw new UnauthorizedException('User is not active');
     }
 
-    const isPasswordMatched = await user.password.compare(dto.password);
+    const isPasswordMatched = await user.validatePassword(dto.password);
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Password is invalid');
     }
 
+    const sessionId = randomUUID();
     const accessToken = this.tokenService.generateAccessToken(
+      sessionId,
       user.id,
-      user.email.getValue(),
+      user.email,
       user.role,
     );
     const refreshToken = this.tokenService.generateRefreshToken(
+      sessionId,
       user.id,
-      user.email.getValue(),
+      user.email,
       user.role,
     );
 
     const payload = new AuthEntity(
-      randomUUID(),
+      sessionId,
       user.id,
       await HashUtil.hash(refreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),

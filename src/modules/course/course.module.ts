@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { UserModule } from '../user/user.module';
 import { CreateCourseUseCase } from './application/use-cases/create-course.use-case';
 import { CreateLessonUseCase } from './application/use-cases/create-lesson.use-case';
 import { DeleteCourseUseCase } from './application/use-cases/delete-course.use-case';
@@ -18,6 +19,7 @@ import { CourseController } from './interface/course.controller';
 import { LessonController } from './interface/lesson.controller';
 
 @Module({
+  imports: [UserModule],
   controllers: [CourseController, LessonController],
   providers: [
     CreateCourseUseCase,

@@ -5,7 +5,6 @@ import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
-import { Price } from '../../domain/value-objects/price.vo';
 import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { CreateCourseDto } from '../dto/create-course.dto';
@@ -31,7 +30,7 @@ export class CreateCourseUseCase {
       randomUUID(),
       dto.title,
       dto.description,
-      new Price(dto.price),
+      dto.price,
       dto.level,
       dto.instructorId,
       dto.isPublished,

@@ -4,7 +4,6 @@ import { NotFoundException } from '../../../../common/exceptions/not-found.excep
 import { LessonEntity } from '../../domain/entities/lesson.entity';
 import { ICourseRepository } from '../../domain/repositories/course.repository.interface';
 import type { ILessonRepository } from '../../domain/repositories/lesson.repository.interface';
-import { Duration } from '../../domain/value-objects/duration.vo';
 import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.mapper';
 import { CreateLessonDto } from '../dto/create-lesson.dto';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
@@ -29,7 +28,7 @@ export class CreateLessonUseCase {
       dto.title,
       dto.description,
       dto.videoUrl,
-      new Duration(dto.duration),
+      dto.duration,
       dto.order,
       dto.isFreePreview,
     );

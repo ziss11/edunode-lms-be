@@ -1,6 +1,5 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import type { ILessonRepository } from '../../domain/repositories/lesson.repository.interface';
-import { Duration } from '../../domain/value-objects/duration.vo';
 import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.mapper';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { UpdateLessonDto } from '../dto/update-lesson.dto';
@@ -23,7 +22,7 @@ export class UpdateLessonUseCase {
     if (dto.order) exists.reorder(dto.order);
     if (dto.isFreePreview) exists.toggleFreePreview();
     if (dto.videoUrl) {
-      exists.changeVideo(dto.videoUrl, new Duration(dto.duration || 0));
+      exists.changeVideo(dto.videoUrl, dto.duration || exists.duration);
     }
 
     const updated = await this.lessonRepository.update(id, exists);

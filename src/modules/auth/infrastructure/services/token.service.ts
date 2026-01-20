@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UnauthorizedException } from '../../../../common/exceptions/unauthorized.exception';
 
 export interface JwtPayload {
+  sessionId: string;
   sub: string;
   email: string;
   role: string;
@@ -18,8 +21,14 @@ export class TokenService {
     private readonly configService: ConfigService,
   ) {}
 
-  generateAccessToken(userId: string, email: string, role: string): string {
+  generateAccessToken(
+    id: string,
+    userId: string,
+    email: string,
+    role: string,
+  ): string {
     const payload: JwtPayload = {
+      sessionId: id,
       sub: userId,
       email,
       role,
@@ -31,8 +40,14 @@ export class TokenService {
     });
   }
 
-  generateRefreshToken(userId: string, email: string, role: string): string {
+  generateRefreshToken(
+    id: string,
+    userId: string,
+    email: string,
+    role: string,
+  ): string {
     const payload: JwtPayload = {
+      sessionId: id,
       sub: userId,
       email,
       role,
@@ -45,9 +60,13 @@ export class TokenService {
   }
 
   verifyRefreshToken(token: string): JwtPayload {
-    return this.jwtService.verify(token, {
-      secret: this.configService.get<string>('jwt.refreshSecret'),
-    });
+    try {
+      return this.jwtService.verify(token, {
+        secret: this.configService.get<string>('jwt.refreshSecret'),
+      });
+    } catch (_) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   calculateRefreshTokenExpiry(): Date {

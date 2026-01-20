@@ -1,6 +1,5 @@
 import { UserEntity } from '../../../user/domain/entities/user.entity';
 import { CourseLevel } from '../enums/course-level.enum';
-import { Price } from '../value-objects/price.vo';
 import { LessonEntity } from './lesson.entity';
 
 export class CourseEntity {
@@ -8,7 +7,7 @@ export class CourseEntity {
     public readonly id: string,
     public title: string,
     public description: string,
-    public price: Price,
+    public price: number,
     public level: CourseLevel,
     public instructorId: string,
     public isPublished: boolean = false,
@@ -33,7 +32,7 @@ export class CourseEntity {
     title: string,
     description: string,
     level: CourseLevel,
-    price: Price,
+    price: number,
     coverImageUrl: string | null,
   ): void {
     this.title = title;

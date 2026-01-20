@@ -1,5 +1,3 @@
-import { Duration } from '../value-objects/duration.vo';
-
 export class LessonEntity {
   constructor(
     public readonly id: string,
@@ -7,7 +5,7 @@ export class LessonEntity {
     public title: string,
     public content: string,
     public videoUrl: string,
-    public duration: Duration,
+    public duration: number,
     public order: number,
     public isFreePreview: boolean = false,
     public createdAt?: Date,
@@ -20,7 +18,7 @@ export class LessonEntity {
     this.updatedAt = new Date();
   }
 
-  changeVideo(videoUrl: string, newDuration: Duration) {
+  changeVideo(videoUrl: string, newDuration: number) {
     this.videoUrl = videoUrl;
     this.duration = newDuration;
     this.updatedAt = new Date();

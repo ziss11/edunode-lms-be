@@ -65,10 +65,7 @@ export class UserRepository implements IUserRepository {
       conditions.email = {
         contains: filters.search,
       };
-      conditions.firstName = {
-        contains: filters.search,
-      };
-      conditions.lastName = {
+      conditions.fullName = {
         contains: filters.search,
       };
     }

@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '../../../../common/exceptions';
 import type { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
-import { Password } from '../../../user/domain/value-objects/password.vo';
 import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 import { UpdatePasswordDto } from '../dto/update-password.dto';
 
@@ -29,9 +28,7 @@ export class UpdatePasswordUseCase {
       throw new UnauthorizedException('Current password is invalid');
     }
 
-    const newPassword = await Password.create(dto.newPassword);
-
-    user.changePassword(newPassword);
+    await user.changePassword(dto.newPassword);
     await this.userRepository.update(id, user);
 
     await this.authRepository.deleteByUserId(id);

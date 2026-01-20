@@ -27,7 +27,7 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('Invalid token type');
     }
 
-    const auth = await this.authRepository.findByUserId(payload.sub);
+    const auth = await this.authRepository.findById(payload.sessionId);
     if (!auth) {
       throw new UnauthorizedException('Session not found');
     }
@@ -38,7 +38,7 @@ export class RefreshTokenUseCase {
     }
 
     if (auth.isTokenExpired()) {
-      await this.authRepository.deleteByUserId(payload.sub);
+      await this.authRepository.delete(payload.sessionId);
       throw new UnauthorizedException('Refresh token is expired');
     }
 
@@ -50,21 +50,25 @@ export class RefreshTokenUseCase {
     if (!user.isActive) {
       throw new UnauthorizedException('Account is deactivated');
     }
-    await this.authRepository.deleteByUserId(payload.sub);
 
+    await this.authRepository.delete(payload.sessionId);
+
+    const newSessionId = randomUUID();
     const newAccessToken = this.tokenService.generateAccessToken(
+      newSessionId,
       user.id,
-      user.email.getValue(),
+      user.email,
       user.role,
     );
     const newRefreshToken = this.tokenService.generateRefreshToken(
+      newSessionId,
       user.id,
-      user.email.getValue(),
+      user.email,
       user.role,
     );
 
     const refreshTokenPayload = new AuthEntity(
-      randomUUID(),
+      newSessionId,
       user.id,
       await HashUtil.hash(newRefreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),

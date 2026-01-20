@@ -107,7 +107,7 @@ export class CourseRepository implements ICourseRepository {
     ]);
 
     const result = {
-      courses: courseRows.map((user) => CourseMapper.toDomain(user)),
+      courses: courseRows.map((course) => CourseMapper.toDomain(course)),
       total: count,
     };
     await this.courseCacheService.setList(options, result);

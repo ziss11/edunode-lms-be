@@ -56,8 +56,7 @@ model Users {
   id        String    @id @db.VarChar(255)
   email     String    @unique(map: "users_email_unique") @db.VarChar(255)
   password  String
-  firstName String    @db.VarChar(100)
-  lastName  String    @db.VarChar(100)
+  fullName  String    @db.VarChar(100)
   role      Roles     @default(student)
   isActive  Boolean   @default(true)
   createdAt DateTime  @db.Timestamp(6)

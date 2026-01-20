@@ -5,8 +5,6 @@ import { HashUtil } from '../../../../common/utils/hash.util';
 import { UserEntity } from '../../../user/domain/entities/user.entity';
 import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import type { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
-import { Email } from '../../../user/domain/value-objects/email.vo';
-import { Password } from '../../../user/domain/value-objects/password.vo';
 import { AuthEntity } from '../../domain/entities/auth.entity';
 import type { IAuthRepository } from '../../domain/repositories/auth.repository.interface';
 import { TokenService } from '../../infrastructure/services/token.service';
@@ -27,15 +25,12 @@ export class RegisterUseCase {
       throw new UnauthorizedException('Email is already in use');
     }
 
-    const email = new Email(dto.email);
-    const password = await Password.create(dto.password);
-
+    const password = await HashUtil.hash(dto.password);
     const payload = new UserEntity(
       randomUUID(),
-      email,
+      dto.email,
       password,
-      dto.firstName,
-      dto.lastName,
+      dto.fullName,
       UserRole.STUDENT,
       true,
       new Date(),
@@ -43,19 +38,22 @@ export class RegisterUseCase {
     );
     const createdUser = await this.userRepository.create(payload);
 
+    const sessionId = randomUUID();
     const accessToken = this.tokenService.generateAccessToken(
+      sessionId,
       createdUser.id,
-      createdUser.email.getValue(),
+      createdUser.email,
       createdUser.role,
     );
     const refreshToken = this.tokenService.generateRefreshToken(
+      sessionId,
       createdUser.id,
-      createdUser.email.getValue(),
+      createdUser.email,
       createdUser.role,
     );
 
     const refreshPayload = new AuthEntity(
-      randomUUID(),
+      sessionId,
       createdUser.id,
       await HashUtil.hash(refreshToken),
       this.tokenService.calculateRefreshTokenExpiry(),

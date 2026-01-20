@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
+import { UserMapper } from '../../infrastructure/persistence/mappers/user.mapper';
 import { ListUsersQueryDto } from '../dto/queries/list-users.query.dto';
 import { UserResponseDto } from '../dto/user.response.dto';
 
@@ -24,10 +25,7 @@ export class ListUsersUseCase {
       },
     });
     return {
-      users: result.users.map(
-        (user) =>
-          new UserResponseDto({ ...user, email: user.email.getValue() }),
-      ),
+      users: result.users.map((user) => UserMapper.toResponse(user)),
       total: result.total,
     };
   }

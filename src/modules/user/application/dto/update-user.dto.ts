@@ -13,23 +13,13 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional({
     type: String,
-    example: 'firstName',
+    example: 'fullName',
   })
   @IsString({
-    message: 'First name must be a string',
+    message: 'Full name must be a string',
   })
   @IsOptional()
-  firstName?: string;
-
-  @ApiPropertyOptional({
-    type: String,
-    example: 'lastName',
-  })
-  @IsString({
-    message: 'Last name must be a string',
-  })
-  @IsOptional()
-  lastName?: string;
+  fullName?: string;
 
   @ApiPropertyOptional({
     type: String,

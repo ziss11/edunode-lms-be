@@ -1,7 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions/not-found.exception';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
-import { Price } from '../../domain/value-objects/price.vo';
 import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
@@ -20,7 +19,7 @@ export class UpdateCourseUseCase {
       dto.title || exists.title,
       dto.description || exists.description,
       dto.level || exists.level,
-      new Price(dto.price || exists.price.getAmount()),
+      dto.price || exists.price,
       dto.coverImageUrl || exists.coverImageUrl,
     );
 

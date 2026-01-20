@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
-import { Email } from '../../domain/value-objects/email.vo';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserResponseDto } from '../dto/user.response.dto';
 
@@ -25,10 +24,9 @@ export class UpdateUserUseCase {
       throw new NotFoundException('Email already used');
     }
 
-    const email = new Email(dto.email ?? '');
-    exists.update(email, dto.firstName ?? '', dto.lastName ?? '', dto.role);
+    exists.update(dto.email, dto.fullName, dto.role);
 
     const user = await this.userRepository.update(id, exists);
-    return new UserResponseDto({ ...user, email: user?.email.getValue() });
+    return new UserResponseDto(user);
   }
 }

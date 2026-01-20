@@ -22,8 +22,7 @@ async function main() {
   const adminData = {
     email: superAdminEmail,
     password: hashedPassword,
-    firstName: 'Super',
-    lastName: 'Admin',
+    fullName: 'Superadmin',
     role: Roles.superadmin,
     isActive: true,
     updatedAt: new Date(),

@@ -12,23 +12,13 @@ export class RegisterDto {
 
   @ApiProperty({
     type: String,
-    example: 'firstName',
+    example: 'fullName',
     required: true,
   })
   @IsString({
-    message: 'First name must be a string',
+    message: 'Full name must be a string',
   })
-  firstName: string;
-
-  @ApiProperty({
-    type: String,
-    example: 'lastName',
-    required: true,
-  })
-  @IsString({
-    message: 'Last name must be a string',
-  })
-  lastName: string;
+  fullName: string;
 
   @ApiProperty({
     type: String,
