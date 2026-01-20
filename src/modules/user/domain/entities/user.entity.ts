@@ -25,6 +25,6 @@ export class UserEntity {
   }
 
   async validatePassword(password: string): Promise<boolean> {
-    return await HashUtil.compare(this.password, password);
+    return await HashUtil.compare(password, this.password);
   }
 }
