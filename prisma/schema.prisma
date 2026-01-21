@@ -66,6 +66,15 @@ model Users {
   @@map("users")
 }
 
+model Enrollments {
+  id          String    @id @db.VarChar(255)
+  studentId   String    @db.VarChar(255)
+  courseId    String    @db.VarChar(255)
+  enrolledAt  DateTime  @db.Timestamp(6)
+  progress    Int       @default(0)
+  completedAt DateTime? @db.Timestamp(6)
+}
+
 enum Levels {
   beginner
   intermediate
