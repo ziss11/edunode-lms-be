@@ -56,9 +56,6 @@ export class LoginUseCase {
     );
     await this.authRepository.create(payload);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return new TokenResponseDto({ accessToken, refreshToken });
   }
 }

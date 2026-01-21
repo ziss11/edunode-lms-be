@@ -1,6 +1,5 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import type { ILessonRepository } from '../../domain/repositories/lesson.repository.interface';
-import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.mapper';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { UpdateLessonDto } from '../dto/update-lesson.dto';
 
@@ -26,6 +25,6 @@ export class UpdateLessonUseCase {
     }
 
     const updated = await this.lessonRepository.update(id, exists);
-    return LessonMapper.toResponse(updated);
+    return new LessonResponseDto(updated);
   }
 }

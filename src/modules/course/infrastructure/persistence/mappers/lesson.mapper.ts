@@ -1,6 +1,5 @@
 import { Lessons } from '../../../../../../generated/prisma/browser';
 import { LessonsCreateInput } from '../../../../../../generated/prisma/models';
-import { LessonResponseDto } from '../../../application/dto/lesson.respons.dto';
 import { LessonEntity } from '../../../domain/entities/lesson.entity';
 
 export class LessonMapper {
@@ -17,20 +16,6 @@ export class LessonMapper {
       row.createdAt,
       row.updatedAt,
     );
-  }
-
-  static toResponse(entity: LessonEntity): LessonResponseDto {
-    return new LessonResponseDto({
-      id: entity.id,
-      title: entity.title,
-      content: entity.content,
-      videoUrl: entity.videoUrl,
-      duration: entity.duration,
-      order: entity.order,
-      isFreePreview: entity.isFreePreview,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
   }
 
   static toPayload(entity: LessonEntity): LessonsCreateInput {

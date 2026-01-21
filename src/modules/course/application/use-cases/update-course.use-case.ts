@@ -1,8 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions/not-found.exception';
+import { UserResponseDto } from '../../../user/application/dto/user.response.dto';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
-import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
+import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 
 export class UpdateCourseUseCase {
@@ -23,7 +24,15 @@ export class UpdateCourseUseCase {
       dto.coverImageUrl || exists.coverImageUrl,
     );
 
-    const result = await this.courseRepository.update(id, exists);
-    return CourseMapper.toResponse(result);
+    const updated = await this.courseRepository.update(id, exists);
+    return new CourseResponseDto({
+      ...updated,
+      instructor: updated.instructor
+        ? new UserResponseDto(updated.instructor)
+        : undefined,
+      lessons: (updated.lessons || []).map(
+        (lesson) => new LessonResponseDto(lesson),
+      ),
+    });
   }
 }

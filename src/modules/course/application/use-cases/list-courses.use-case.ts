@@ -1,7 +1,8 @@
 import { Inject } from '@nestjs/common';
+import { UserResponseDto } from '../../../user/application/dto/user.response.dto';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
-import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
+import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { ListCoursesQueryDto } from '../dto/queries/list-courses.query.dto';
 
 export class ListCoursesUseCase {
@@ -30,7 +31,18 @@ export class ListCoursesUseCase {
       },
     });
     return {
-      courses: result.courses.map((course) => CourseMapper.toResponse(course)),
+      courses: result.courses.map(
+        (course) =>
+          new CourseResponseDto({
+            ...course,
+            instructor: course.instructor
+              ? new UserResponseDto(course.instructor)
+              : undefined,
+            lessons: (course.lessons || []).map(
+              (lesson) => new LessonResponseDto(lesson),
+            ),
+          }),
+      ),
       total: result.total,
     };
   }

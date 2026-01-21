@@ -61,9 +61,6 @@ export class RegisterUseCase {
     );
     await this.authRepository.create(refreshPayload);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return new TokenResponseDto({ accessToken, refreshToken });
   }
 }

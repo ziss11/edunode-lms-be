@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NotFoundException } from '../../../../common/exceptions';
+import {
+  ConflictException,
+  NotFoundException,
+} from '../../../../common/exceptions';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserResponseDto } from '../dto/user.response.dto';
@@ -21,7 +24,7 @@ export class UpdateUserUseCase {
 
     const emailExists = await this.userRepository.findByEmail(dto.email ?? '');
     if (emailExists) {
-      throw new NotFoundException('Email already used');
+      throw new ConflictException('Email already used');
     }
 
     exists.update(dto.email, dto.fullName, dto.role);

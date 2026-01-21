@@ -4,7 +4,6 @@ import { NotFoundException } from '../../../../common/exceptions/not-found.excep
 import { LessonEntity } from '../../domain/entities/lesson.entity';
 import { ICourseRepository } from '../../domain/repositories/course.repository.interface';
 import type { ILessonRepository } from '../../domain/repositories/lesson.repository.interface';
-import { LessonMapper } from '../../infrastructure/persistence/mappers/lesson.mapper';
 import { CreateLessonDto } from '../dto/create-lesson.dto';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 
@@ -33,6 +32,6 @@ export class CreateLessonUseCase {
       dto.isFreePreview,
     );
     const result = await this.lessonRepository.create(lesson);
-    return LessonMapper.toResponse(result);
+    return new LessonResponseDto(result);
   }
 }

@@ -76,9 +76,9 @@ export class RefreshTokenUseCase {
     );
     await this.authRepository.create(refreshTokenPayload);
 
-    return {
+    return new TokenResponseDto({
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
-    };
+    });
   }
 }

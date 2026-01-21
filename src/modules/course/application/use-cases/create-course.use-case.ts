@@ -1,13 +1,14 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { BadRequestException } from '../../../../common/exceptions/bad-request.exception';
+import { UserResponseDto } from '../../../user/application/dto/user.response.dto';
 import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
-import { CourseMapper } from '../../infrastructure/persistence/mappers/course.mapper';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { CreateCourseDto } from '../dto/create-course.dto';
+import { LessonResponseDto } from '../dto/lesson.respons.dto';
 
 export class CreateCourseUseCase {
   constructor(
@@ -39,6 +40,14 @@ export class CreateCourseUseCase {
       new Date(),
     );
     const created = await this.courseRepository.create(course);
-    return CourseMapper.toResponse(created);
+    return new CourseResponseDto({
+      ...created,
+      instructor: created.instructor
+        ? new UserResponseDto(created.instructor)
+        : undefined,
+      lessons: (created.lessons || []).map(
+        (lesson) => new LessonResponseDto(lesson),
+      ),
+    });
   }
 }
