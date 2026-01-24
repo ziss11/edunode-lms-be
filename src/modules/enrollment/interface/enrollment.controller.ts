@@ -42,7 +42,7 @@ export class EnrollmentController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.STUDENT)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.STUDENT)
   @HttpCode(HttpStatus.CREATED)
   @Validate(EnrollCourseDto)
   @ApiOperation({ summary: 'Enroll a course' })
@@ -53,7 +53,7 @@ export class EnrollmentController {
   }
 
   @Get()
-  @Roles(Role.SUPERADMIN, Role.STUDENT)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(EnrollmentParamDto)
   @ApiOperation({ summary: 'Get an enrollment' })

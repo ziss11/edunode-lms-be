@@ -36,7 +36,7 @@ export class LessonController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateLessonDto)
   @ApiOperation({ summary: 'Add a new lesson' })
@@ -47,7 +47,7 @@ export class LessonController {
   }
 
   @Patch(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(LessonParamDto)
   @Validate(UpdateLessonDto)
@@ -59,7 +59,7 @@ export class LessonController {
   }
 
   @Delete(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(LessonParamDto)
   @ApiOperation({ summary: 'Delete a lesson' })

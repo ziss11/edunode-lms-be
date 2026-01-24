@@ -48,7 +48,7 @@ export class CourseController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateCourseDto)
   @ApiOperation({ summary: 'Create a new course' })
@@ -59,7 +59,7 @@ export class CourseController {
   }
 
   @Get()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.INSTRUCTOR)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(ListCoursesQueryDto)
   @ApiOperation({ summary: 'List all courses' })
@@ -80,7 +80,7 @@ export class CourseController {
   }
 
   @Get(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.INSTRUCTOR)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Get course by id' })
@@ -91,7 +91,7 @@ export class CourseController {
   }
 
   @Patch(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @Validate(UpdateCourseDto)
@@ -103,7 +103,7 @@ export class CourseController {
   }
 
   @Delete(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Delete course' })
