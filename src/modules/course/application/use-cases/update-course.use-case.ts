@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common';
 import { NotFoundException } from '../../../../common/exceptions/not-found.exception';
 import { UserResponseDto } from '../../../user/application/dto/user.response.dto';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
+import { CourseEventPublisher } from '../../infrastructure/messaging/publishers/course-event.publisher';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
@@ -10,6 +11,7 @@ export class UpdateCourseUseCase {
   constructor(
     @Inject('ICourseRepository')
     private readonly courseRepository: ICourseRepository,
+    private readonly courseEventPublisher: CourseEventPublisher,
   ) {}
 
   async execute(id: string, dto: UpdateCourseDto): Promise<CourseResponseDto> {
@@ -25,6 +27,18 @@ export class UpdateCourseUseCase {
     );
 
     const updated = await this.courseRepository.update(id, exists);
+    this.courseEventPublisher.publishCourseUpdated({
+      courseId: updated.id,
+      changes: {
+        title: dto.title,
+        description: dto.description,
+        level: dto.level,
+        price: dto.price,
+        coverImageUrl: dto.coverImageUrl,
+      },
+      timestamp: new Date(),
+    });
+
     return new CourseResponseDto({
       ...updated,
       instructor: updated.instructor

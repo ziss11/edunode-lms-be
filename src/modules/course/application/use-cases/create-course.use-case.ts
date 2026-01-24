@@ -6,6 +6,7 @@ import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
 import { CourseEntity } from '../../domain/entities/course.entity';
 import type { ICourseRepository } from '../../domain/repositories/course.repository.interface';
+import { CourseEventPublisher } from '../../infrastructure/messaging/publishers/course-event.publisher';
 import { CourseResponseDto } from '../dto/course.response.dto';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { LessonResponseDto } from '../dto/lesson.respons.dto';
@@ -16,6 +17,7 @@ export class CreateCourseUseCase {
     private readonly courseRepository: ICourseRepository,
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
+    private readonly courseEventPublisher: CourseEventPublisher,
   ) {}
 
   async execute(dto: CreateCourseDto): Promise<CourseResponseDto> {
@@ -40,6 +42,14 @@ export class CreateCourseUseCase {
       new Date(),
     );
     const created = await this.courseRepository.create(course);
+    this.courseEventPublisher.publishCourseCreated({
+      courseId: created.id,
+      instructorId: created.instructorId,
+      title: created.title,
+      price: created.price,
+      timestamp: new Date(),
+    });
+
     return new CourseResponseDto({
       ...created,
       instructor: created.instructor
