@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Injectable,
   Patch,
   Post,
   UseGuards,
@@ -32,7 +31,7 @@ import { UpdatePasswordUseCase } from '../application/use-cases/update-password.
 
 @ApiTags('Auths')
 @Controller('auths')
-@Injectable()
+@UseGuards(JwtAuthGuard)
 export class AuthController {
   constructor(
     private readonly loginUseCase: LoginUseCase,
@@ -78,7 +77,6 @@ export class AuthController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT Auth')
   @ApiOperation({ summary: 'Get logged user info' })
   @ApiStandardResponse(UserResponseDto)
@@ -88,7 +86,6 @@ export class AuthController {
   }
 
   @Patch('update-password')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT Auth')
   @HttpCode(HttpStatus.OK)
   @Validate(UpdatePasswordDto)
@@ -103,7 +100,6 @@ export class AuthController {
   }
 
   @Delete('logout')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT Auth')
   @ApiOperation({ summary: 'Logout user' })
   @ApiStandardResponse(TokenResponseDto)

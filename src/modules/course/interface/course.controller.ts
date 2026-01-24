@@ -14,6 +14,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { ApiStandardResponse } from '../../../common/decorators/api-response.decorator';
+import { Public } from '../../../common/decorators/public.decorator';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
@@ -35,7 +36,6 @@ import { UpdateCourseUseCase } from '../application/use-cases/update-course.use-
 
 @ApiTags('Courses')
 @Controller('courses')
-@ApiBearerAuth('JWT Auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CourseController {
   constructor(
@@ -49,6 +49,7 @@ export class CourseController {
   ) {}
 
   @Post()
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateCourseDto)
@@ -60,8 +61,7 @@ export class CourseController {
   }
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR, UserRole.STUDENT)
-  @HttpCode(HttpStatus.OK)
+  @Public()
   @Validate(ListCoursesQueryDto)
   @ApiOperation({ summary: 'List all courses' })
   @ApiStandardResponse(CourseResponseDto, { isArray: true })
@@ -81,6 +81,7 @@ export class CourseController {
   }
 
   @Get(':id')
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
@@ -92,6 +93,7 @@ export class CourseController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
@@ -104,6 +106,7 @@ export class CourseController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Validate(CourseParamDto)
@@ -115,6 +118,7 @@ export class CourseController {
   }
 
   @Patch(':id/publish')
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
@@ -126,6 +130,7 @@ export class CourseController {
   }
 
   @Patch(':id/unpublish')
+  @ApiBearerAuth('JWT Auth')
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
