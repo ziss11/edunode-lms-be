@@ -34,7 +34,13 @@ export class EnrollmentRepository implements IEnrollmentRepository {
     const cache = await this.enrollmentCacheService.get(id);
     if (cache) return cache;
 
-    const enrollment = await this.db.enrollments.findUnique({ where: { id } });
+    const enrollment = await this.db.enrollments.findUnique({
+      where: { id },
+      include: {
+        student: true,
+        course: true,
+      },
+    });
     const result = enrollment ? EnrollmentMapper.toDomain(enrollment) : null;
     if (result) await this.enrollmentCacheService.set(id, result);
 
@@ -49,6 +55,10 @@ export class EnrollmentRepository implements IEnrollmentRepository {
 
     const enrollments = await this.db.enrollments.findMany({
       where: { studentId: userId },
+      include: {
+        student: true,
+        course: true,
+      },
     });
     const result = {
       enrollments: enrollments.map((enrollment) =>
@@ -67,7 +77,14 @@ export class EnrollmentRepository implements IEnrollmentRepository {
   ): Promise<EnrollmentEntity> {
     const updated = await this.db.enrollments.update({
       where: { id },
-      data: { progress },
+      data: {
+        progress,
+        completedAt: progress === 100 ? new Date() : null,
+      },
+      include: {
+        student: true,
+        course: true,
+      },
     });
 
     const result = EnrollmentMapper.toDomain(updated);

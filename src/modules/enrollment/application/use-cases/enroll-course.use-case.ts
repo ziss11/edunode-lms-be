@@ -9,6 +9,7 @@ import { UserRole } from '../../../user/domain/enums/user-role.enum';
 import { IUserRepository } from '../../../user/domain/repositories/user.repository.interface';
 import { EnrollmentEntity } from '../../domain/entities/enrollment.entity';
 import type { IEnrollmentRepository } from '../../domain/repositories/enrollment.repository.interface';
+import { EnrollmentEventPublisher } from '../../infrastructure/messaging/publishers/enrollment-event.publisher';
 import { EnrollCourseDto } from '../dto/enroll-course.dto';
 import { EnrollmentResponseDto } from '../dto/enrollment-response.dto';
 
@@ -21,6 +22,7 @@ export class EnrollCourseUseCase {
     private readonly userRepository: IUserRepository,
     @Inject('ICourseRepository')
     private readonly courseRepository: ICourseRepository,
+    private readonly enrollmentEventPublisher: EnrollmentEventPublisher,
   ) {}
 
   async execute(dto: EnrollCourseDto): Promise<EnrollmentResponseDto> {
@@ -45,7 +47,15 @@ export class EnrollCourseUseCase {
       0,
       null,
     );
-    const result = await this.enrollmentRepository.enroll(enrollment);
-    return new EnrollmentResponseDto(result);
+
+    const created = await this.enrollmentRepository.enroll(enrollment);
+    this.enrollmentEventPublisher.publishCourseEnrolled({
+      id: created.id,
+      courseId: created.courseId,
+      studentId: created.studentId,
+      enrolledAt: created.enrolledAt,
+    });
+
+    return new EnrollmentResponseDto(created);
   }
 }
