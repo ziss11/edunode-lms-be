@@ -17,11 +17,19 @@ export class EnrollmentMapper {
   static toPayload(enrollment: EnrollmentEntity): EnrollmentsCreateInput {
     return {
       id: enrollment.id,
-      courseId: enrollment.courseId,
-      studentId: enrollment.studentId,
       enrolledAt: enrollment.enrolledAt,
       progress: enrollment.progress,
       completedAt: enrollment.completedAt,
+      student: {
+        connect: {
+          id: enrollment.studentId,
+        },
+      },
+      course: {
+        connect: {
+          id: enrollment.courseId,
+        },
+      },
     };
   }
 }
