@@ -23,7 +23,7 @@ async function main() {
     email: superAdminEmail,
     password: hashedPassword,
     fullName: 'Superadmin',
-    role: Roles.superadmin,
+    role: Roles.admin,
     isActive: true,
     updatedAt: new Date(),
   };

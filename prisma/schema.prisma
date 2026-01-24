@@ -90,7 +90,6 @@ enum Levels {
 }
 
 enum Roles {
-  superadmin
   admin
   instructor
   student

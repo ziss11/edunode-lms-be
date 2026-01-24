@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsIn, IsString, Matches, MinLength } from 'class-validator';
+import { UserRole } from '../../../user/domain/enums/user-role.enum';
 
 export class RegisterDto {
   @ApiProperty({
@@ -19,6 +20,19 @@ export class RegisterDto {
     message: 'Full name must be a string',
   })
   fullName: string;
+
+  @ApiProperty({
+    type: String,
+    example: 'role',
+    required: true,
+  })
+  @IsString({
+    message: 'Role must be a string',
+  })
+  @IsIn([UserRole.STUDENT, UserRole.INSTRUCTOR], {
+    message: 'Role must be either student or instructor',
+  })
+  role: UserRole;
 
   @ApiProperty({
     type: String,

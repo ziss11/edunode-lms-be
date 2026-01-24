@@ -12,10 +12,11 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { ApiStandardResponse } from '../../../common/decorators/api-response.decorator';
-import { Role, Roles } from '../../../common/decorators/roles.decorator';
+import { Roles } from '../../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { ResponseUtils } from '../../../common/utils/response.util';
+import { UserRole } from '../../user/domain/enums/user-role.enum';
 import { CreateLessonDto } from '../application/dto/create-lesson.dto';
 import { LessonResponseDto } from '../application/dto/lesson.respons.dto';
 import { LessonParamDto } from '../application/dto/params/lesson.param.dto';
@@ -36,7 +37,7 @@ export class LessonController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateLessonDto)
   @ApiOperation({ summary: 'Add a new lesson' })
@@ -47,7 +48,7 @@ export class LessonController {
   }
 
   @Patch(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(LessonParamDto)
   @Validate(UpdateLessonDto)
@@ -59,7 +60,7 @@ export class LessonController {
   }
 
   @Delete(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(LessonParamDto)
   @ApiOperation({ summary: 'Delete a lesson' })

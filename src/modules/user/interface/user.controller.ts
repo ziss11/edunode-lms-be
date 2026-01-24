@@ -14,7 +14,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { ApiStandardResponse } from '../../../common/decorators/api-response.decorator';
-import { Role, Roles } from '../../../common/decorators/roles.decorator';
+import { Roles } from '../../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { BaseListResponse } from '../../../common/responses/base.response';
@@ -30,6 +30,7 @@ import { DeleteUserUseCase } from '../application/use-cases/delete-user.use-case
 import { GetUserUseCase } from '../application/use-cases/get-user.use-case';
 import { ListUsersUseCase } from '../application/use-cases/list-users.use-case';
 import { UpdateUserUseCase } from '../application/use-cases/update-user.use-case';
+import { UserRole } from '../domain/enums/user-role.enum';
 
 @ApiTags('Users')
 @Controller('users')
@@ -45,7 +46,7 @@ export class UserController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateUserDto)
   @ApiOperation({ summary: 'Create a new user' })
@@ -56,7 +57,7 @@ export class UserController {
   }
 
   @Get()
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(ListUsersQueryDto)
   @ApiOperation({ summary: 'List all users' })
@@ -76,7 +77,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(UserParamDto)
   @ApiOperation({ summary: 'Get user by id' })
@@ -87,7 +88,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(UserParamDto)
   @Validate(UpdateUserDto)
@@ -99,7 +100,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Validate(UserParamDto)
   @ApiOperation({ summary: 'Delete user by id' })

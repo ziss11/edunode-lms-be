@@ -16,10 +16,11 @@ import {
   CurrentUser,
   CurrentUserData,
 } from '../../../common/decorators/current-user.decorator';
-import { Role, Roles } from '../../../common/decorators/roles.decorator';
+import { Roles } from '../../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { ResponseUtils } from '../../../common/utils/response.util';
+import { UserRole } from '../../user/domain/enums/user-role.enum';
 import { EnrollCourseDto } from '../application/dto/enroll-course.dto';
 import { EnrollmentResponseDto } from '../application/dto/enrollment-response.dto';
 import { EnrollmentParamDto } from '../application/dto/params/enrollment.param.dto';
@@ -42,7 +43,7 @@ export class EnrollmentController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @HttpCode(HttpStatus.CREATED)
   @Validate(EnrollCourseDto)
   @ApiOperation({ summary: 'Enroll a course' })
@@ -53,7 +54,7 @@ export class EnrollmentController {
   }
 
   @Get()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(EnrollmentParamDto)
   @ApiOperation({ summary: 'Get an enrollment' })
@@ -64,7 +65,7 @@ export class EnrollmentController {
   }
 
   @Get('my')
-  @Roles(Role.SUPERADMIN, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get my enrollments' })
   @ApiStandardResponse(EnrollmentResponseDto, { isArray: true })
@@ -74,7 +75,7 @@ export class EnrollmentController {
   }
 
   @Patch(':id/progress')
-  @Roles(Role.SUPERADMIN, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(EnrollmentParamDto)
   @Validate(UpdateProgressDto)

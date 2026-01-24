@@ -14,11 +14,12 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Validate } from 'class-validator';
 import { ApiStandardResponse } from '../../../common/decorators/api-response.decorator';
-import { Role, Roles } from '../../../common/decorators/roles.decorator';
+import { Roles } from '../../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { MetaResponse } from '../../../common/responses/meta.response';
 import { ResponseUtils } from '../../../common/utils/response.util';
+import { UserRole } from '../../user/domain/enums/user-role.enum';
 import { CourseResponseDto } from '../application/dto/course.response.dto';
 import { CreateCourseDto } from '../application/dto/create-course.dto';
 import { CourseParamDto } from '../application/dto/params/course.param.dto';
@@ -48,7 +49,7 @@ export class CourseController {
   ) {}
 
   @Post()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.CREATED)
   @Validate(CreateCourseDto)
   @ApiOperation({ summary: 'Create a new course' })
@@ -59,7 +60,7 @@ export class CourseController {
   }
 
   @Get()
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(ListCoursesQueryDto)
   @ApiOperation({ summary: 'List all courses' })
@@ -80,7 +81,7 @@ export class CourseController {
   }
 
   @Get(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR, UserRole.STUDENT)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Get course by id' })
@@ -91,7 +92,7 @@ export class CourseController {
   }
 
   @Patch(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @Validate(UpdateCourseDto)
@@ -103,7 +104,7 @@ export class CourseController {
   }
 
   @Delete(':id')
-  @Roles(Role.SUPERADMIN, Role.ADMIN, Role.INSTRUCTOR)
+  @Roles(UserRole.ADMIN, UserRole.INSTRUCTOR)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Delete course' })
@@ -114,7 +115,7 @@ export class CourseController {
   }
 
   @Patch(':id/publish')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Publish course' })
@@ -125,7 +126,7 @@ export class CourseController {
   }
 
   @Patch(':id/unpublish')
-  @Roles(Role.SUPERADMIN, Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   @Validate(CourseParamDto)
   @ApiOperation({ summary: 'Unpublish course' })
